@@ -196,7 +196,7 @@ img.clickable:hover {
 }
 
 pre {
-  font: 20px 'Inconsolata';
+  font: 20px Inconsolata;
   color: #000;
   text-align: left;
   padding: 10px 20px;
@@ -736,6 +736,13 @@ strong.html5 {
 .videoContent {
   margin-top: 20px;
   text-align: center;
+}
+
+/*******************************************************************************
+ * SVG 
+ ******************************************************************************/
+#slide-svg svg text {
+  font: 40px Lobster;
 }
 
 /*******************************************************************************

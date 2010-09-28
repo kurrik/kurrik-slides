@@ -516,27 +516,23 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
  * SVG
  *
 -->
-<div class="slide">
-  <header>SVG</header>
+<div class="slide" id="slide-svg">
+  <header>Inline SVG</header>
   <section class="hcenter">
-    <pre>&lt;svg height=&quot;400&quot; width=&quot;800&quot;&gt;
+    <pre>&lt;<b>svg</b> height=&quot;300&quot; width=&quot;800&quot;&gt;
   &lt;defs&gt;
     &lt;path id=&quot;textPath&quot; d=&quot;
-      M 100,100 C 200,0 200,400 400,300 C 600,0 600,400 800,100&quot;&gt;
+      M 50,100 C 200,0 200,300 400,200 C 600,0 600,300 800,100&quot;&gt;
   &lt;/defs&gt;
   &lt;text&gt;
-    &lt;tspan x=&quot;10&quot; y=&quot;160&quot;&gt;
-      &lt;textPath xlink:href=&quot;#textPath&quot;&gt;Did you know that 
-        SVG can render text along a path?&lt;/textPath&gt;
-    &lt;/tspan&gt;
+    &lt;tspan&gt;&lt;textPath xlink:href=&quot;#textPath&quot;&gt;Did you know that 
+        SVG can render text along a path?&lt;/textPath&gt;&lt;/tspan&gt;
   &lt;/text&gt;
-&lt;/svg&gt;</pre>
-    <svg height="300" width="800">
+&lt;/<b>svg</b>&gt;</pre>
+    <svg height="200" width="800">
       <defs>
         <path id="textPath" d="
-          M 50,100 
-          C 200,0 200,300 400,200
-          C 600,0 600,300 800,100">
+          M 20,50 C 200,0 200,300 400,100 C 600,0 600,200 800,150">
       </defs>
       <text>
         <tspan>
@@ -545,11 +541,6 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
         </tspan>
       </text>
     </svg>
-    <style>
-      svg text {
-        font: 40px Lobster;
-      }
-    </style>
   </section>
 </div>
 
@@ -838,6 +829,38 @@ $(document).ready(function() {
 });
 </script>
 
+
+<!--
+ *
+ * Device Orientation
+ *
+-->
+<div class="slide" id="slide-orientation">
+  <header>Device Orientation</header>
+  <section class="vbox boxcenter flex">
+    <pre id="orientation-pre">window.addEventListener(<b>"deviceorientation"</b>, function(event) {
+  ...
+}</pre>
+  </section>
+</div>
+<script>
+  function setOrientation(evt) {
+    if (Math.abs(evt.gamma) > 5) {
+      $('#orientation-pre').css('-webkit-transform', 'rotate(' + -evt.gamma + 'deg)');
+    } else {
+      $('#orientation-pre').css('-webkit-transform', 'rotate(0deg)');
+    }    
+  };
+  function startOrientationDemo() {
+    window.addEventListener("deviceorientation", setOrientation, true);    
+  };
+  function stopOrientationDemo() {
+    window.removeEventListener("deviceorientation", setOrientation, true);        
+  };
+  $('#slide-orientation')
+    .bind('focusslide', $.proxy(startOrientationDemo))
+    .bind('blurslide', $.proxy(stopOrientationDemo));
+</script>
 
 <!--
  *
