@@ -1,0 +1,15 @@
+Developing with HTML5 README
+============================
+
+This presentation was used for the "Developing with HTML5" session at Google I/O
+2010.  It was based off of the slide deck from http://code.google.com/p/html5-slides/ but all of the slides were rewritten
+to show new HTML5 content.  You should have gotten this source from a branch
+in that project's SVN repository.
+
+To run the project, execute serve_appengine.sh from this directory.  You must
+have dev_appserver.py (available from the App Engine SDK) on your path.  You
+will be able to access your slides from http://localhost:5104.
+
+See the LICENSE file for information about this project's licensing.  See the
+NOTICE file for third party licenses.
+

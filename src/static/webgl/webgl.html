@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+ * Originally from: http://learningwebgl.com/blog/?p=684
+ * Modifications by Arne Roomann-Kurrik
+-->
+<html>
+  <head>
+    <title>WebGL Demo</title> 
+    <script src="webgl-sylvester.js"></script> 
+    <script src="webgl-utils.js"></script>
+
+    <script id="shader-fs" type="x-shader/x-fragment"> 
+      varying vec2 vTextureCoord;
+      varying vec3 vLightWeighting;
+
+      uniform sampler2D uSampler;
+
+      void main(void) {
+         vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+         gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+      }
+    </script> 
+
+    <script id="shader-vs" type="x-shader/x-vertex"> 
+      attribute vec3 aVertexPosition;
+      attribute vec3 aVertexNormal;
+      attribute vec2 aTextureCoord;
+
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      uniform mat4 uNMatrix;
+
+      uniform vec3 uAmbientColor;
+
+      uniform vec3 uLightingDirection;
+      uniform vec3 uDirectionalColor;
+
+      uniform bool uUseLighting;
+
+      varying vec2 vTextureCoord;
+      varying vec3 vLightWeighting;
+
+      void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+
+        if (!uUseLighting) {
+          vLightWeighting = vec3(1.0, 1.0, 1.0);
+        } else {
+          vec4 transformedNormal = uNMatrix * vec4(aVertexNormal, 1.0);
+          float directionalLightWeighting = max(dot(transformedNormal.xyz, uLightingDirection), 0.0);
+          vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        }
+      }
+    </script>
+    <script src="webgl-demo.js"></script> 
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head> 
+  <body> 
+    <canvas id="webglcanvas" width="400" height="330"></canvas>  
+    <script>
+      function receiveMessage(event) {  
+        if (event.origin !== "http://" + window.location.host) {
+          return;
+        }  
+        if (event.data.action) {
+          if (event.data.action == 'start') {
+            start();
+          } else if (event.data.action == 'stop') {
+            stop();
+          }
+        }
+      };
+      window.addEventListener("message", receiveMessage, false);  
+      window.addEventListener("load", init, false);
+    </script>
+  </body> 
+</html>

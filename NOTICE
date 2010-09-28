@@ -1,0 +1,36 @@
+License
+--------------------------------------------------------------------------------
+JQUERY:
+The jQuery library included in this presentation is originally by John Resig
+and is released under an MIT license. jQuery can be found at http://jquery.com/.
+
+BOX2DJS:
+The box2djs library included in this presentation is released under the
+zlib license and the source is available here:
+http://sourceforge.net/projects/box2d-js/
+
+WEBGL:
+The webgl code included in this presentation is based off of the article 
+by Giles Thomas available here: http://learningwebgl.com/blog/?p=684
+
+SOURCE CODE:
+Except where noted, the source code of this presentation is released under the 
+Apache 2 license, as described in the LICENSE file.
+
+
+FONTS:
+This presentation uses fonts from http://code.google.com/webfonts:
+ * Molengo
+ * Yanone Kaffeesatz
+ * Droid Serif
+ * OFL Sorts Mill Goudy TT
+ * Inconsolata 
+ * Lobster
+ * Cantal
+ * Josefin Sans Std Light
+
+
+CONTENT:
+All other content in this presentation is released under the 
+Creative Commons Attribution-Share Alike 3.0 Unported License as described here:
+http://creativecommons.org/licenses/by-sa/3.0/

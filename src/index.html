@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Original slides:
+    Marcin Wichary (mwichary)
+
+Modifications:
+    Ernest Delgado (ernestd)
+    Alex Russell (slightlyoff)
+    Mihai Ionescu (mihai)
+    Arne Roomann-Kurrik (kurrik)
+-->
+<html>
+  <head>
+    <title>HTML5 Tech Talk</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <script src="static/js/box2d.min.js"></script>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/slide-presentation.js"></script>
+    <script src="static/js/slide-content.js"></script>
+    <script src="static/js/worker-lib.js"></script>
+    <link rel="stylesheet" href="static/css/slide-presentation.css" />
+    <link rel="stylesheet" href="static/css/slide-content.css" />
+  </head>
+  <body>
+    <div class="presentation">
+      <div class="slides">
+
+<!--
+ *
+ * Preflight
+ *
+-->
+<div class="slide transitionSlide" id="slide-preflight">
+  <section class="flex vbox boxcenter">
+      <h2>Preflight</h2>
+      <div id="feature-webgl" class="hidden good feature">
+        <div><img src='static/images/icon-ok.png'/> WebGL is enabled</div>
+      </div>
+      <div id="feature-no-webgl" class="hidden bad feature">
+        <div><img src='static/images/icon-error.png'/> WebGL is disabled</div>
+        <div class="explanation">
+          You will not be able to see the WebGL demo
+          later in the slide deck.  If using Google Chrome, you will likely 
+          need to run the Chrome executable using the 
+          <code>--enable-webgl</code> flag.
+        </div>
+      </div>
+
+      <div id="browser-webkit" class="hidden good feature">
+        <div><img src='static/images/icon-ok.png'/> Webkit</div>
+        <div class="explanation">
+          If using Google Chrome, you will likely need the Dev channel to see
+          all of the functionality in this presentation.  If you are using
+          Safari, you will likely need a nightly build of Webkit in order to
+          see all of the functionality in this presentation.
+        </div>
+      </div>
+      <div id="browser-mozilla" class="hidden warning feature">
+        <div><img src='static/images/icon-warning.png'/> Mozilla</div>
+        <div class="explanation">
+          You are running a Mozilla browser.  While such browsers generally have
+          excellent support for HTML5 features, this presentation has only
+          been tested using Webkit browsers such as 
+          <a href="http://www.google.com/chrome">Google Chrome</a> or 
+          <a href="http://www.apple.com/safari/">Safari</a>.
+          Eventually we hope to add Mozilla as a supported browser for this 
+          presentation.
+        </div>
+      </div>
+      <div id="browser-other" class="hidden bad feature">
+        <div><img src='static/images/icon-error.png'/> Other browser</div>
+        <div class="explanation">
+          You are running a browser that has not been tested with this 
+          presentation.  You may not be able to run some or all of the samples
+          listed here.  While we want to add support for as many browsers as
+          possible, currently we only support Webkit-based browsers such as
+          <a href="http://www.google.com/chrome">Google Chrome</a> or 
+          <a href="http://www.apple.com/safari/">Safari</a>.
+        </div>
+      </div>
+
+      <div id="feature-notification" class="hidden">
+        <div id="notification-on" class='hidden warning feature'>
+          <div><img src='static/images/icon-warning.png'/> Notification permission incorrect</div>
+          <div class="explanation">
+            You have granted permission for this page to show notifications.
+            If you intended to demo the request permission functionality, you
+            may want to clear this permission by clicking 
+            <a href="javascript:resetNotifications();">here</a> and removing
+            the permission.
+          </div>
+        </div>
+        <div id="notification-off" class='hidden good feature'>
+          <div><img src='static/images/icon-ok.png'/> Notification permission correct</div>
+        </div>
+      </div>
+
+      <div id="feature-no-notification" class="hidden bad feature">
+        <div><img src='static/images/icon-error.png'/> No notification</div>
+        <div class="explanation">
+          Your browser does not support displaying notifications.  Currently,
+          only <a href="http://www.google.com/chrome">Google Chrome</a>
+          will support this functionality.
+        </div>
+      </div>
+      
+    </div>
+</div>
+<script>
+  function hide(id) {
+    $('#' + id).addClass('hidden');
+  }
+  function unhide(id) {
+    $('#' + id).removeClass('hidden');
+  };
+  function checkWebGL() {
+    try {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('experimental-webgl');
+      if (context) {
+        unhide('feature-webgl');
+        return;
+      }
+    } catch(e) {}
+    unhide('feature-no-webgl');
+  };
+  function checkBrowser() {
+    if ($.browser.webkit) {
+      unhide('browser-webkit');
+    } else if ($.browser.mozilla) {
+      unhide('browser-mozilla');
+    } else {
+      unhide('browser-other');
+    }
+  };
+  function resetNotifications() {
+    webkitNotifications.requestPermission(function() {
+      window.location.reload();
+    });
+  };
+  function checkNotifications() {
+    if (!window.hasOwnProperty('webkitNotifications')) {
+      unhide('feature-no-notification');
+    } else {
+      unhide('feature-notification');
+      if (webkitNotifications.checkPermission() == 0) {
+        unhide('notification-on');
+      } else {
+        unhide('notification-off');
+      }
+    }
+  };
+
+  $(document).ready(function() {
+    checkBrowser();
+    checkWebGL();
+    checkNotifications();
+  });
+</script>
+
+<!--
+ *
+ * Session Title
+ *
+-->
+<div class="slide">
+  <section class="center">
+    <div class="titleContent">
+      <h2 class="titleTitle">
+        HTML5 and Chrome Tech Talk
+      </h2>
+      <p class="titleText">
+        Arne Roomann-Kurrik
+      </p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Presentation Info
+ *
+-->
+<div class="slide">
+  <section class="hbox boxcenter">
+    <div class="noflex vbox">
+      <p class="">This presentation was built using <span class="html5">HTML5</span>:</p>
+      <ul>
+        <li><strong>637 HTML elements</strong></li>
+        <li><strong>903 lines of (non-library) JavaScript</strong></li>
+        <li><strong>119 CSS rules</strong></li>
+      </ul>
+      <p class="hcenter">Press <span class="key">→</span> to advance.</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Timeline of HTML5 features
+ *
+-->
+<div class="slide vbox clickable" id="slide-timeline">
+  <header>Where have we been?</header>
+  <section class="flex" >
+    <div class="hbox timelineSlider hidden">
+      <div year="1990" top="1500" class="html">
+        First web page
+      </div>
+      <div year="1994" top="1350" class="html">
+        HTML 2
+      </div>
+      <div year="1995" top="1200" class="js">
+        JavaScript
+      </div>
+      <div year="1996" top="1050" class="css">
+        CSS 1
+      </div>
+      <div year="1997" top="900" class="html">
+        HTML 4
+      </div>
+      <div year="1998" top="750" class="css">
+        CSS 2
+      </div>
+      <div year="1999" top="600" class="js">
+        XMLHTTP
+      </div>
+      <div year="2002" top="450" class="js">
+        XmlHttpRequest
+      </div>
+      <div year="2005" top="300" class="js">
+        AJAX
+      </div>
+      <div year="2009" top="150" class="html html5">
+        HTML 5
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  $(window).bind('load', function() {
+    var slide = document.getElementById('slide-timeline');
+    $(slide).find('.hidden').removeClass('hidden');
+    var tl = new TimeLine(slide);
+  });
+</script>
+
+
+<!--
+ *
+ * HTML5 APIs
+ *
+-->
+<div class="slide">
+  <header>Where are we going?</header>
+  <section>
+    <img src="static/images/html5_apis.png" />
+  </section>
+</div>
+
+
+<!--
+ *
+ * HTML is...
+ *
+-->
+<div class="slide clickable" id="slide-physics">
+  <section class="hidden">
+    <div class="physicsText">What is...</div>
+    <div class="physicsText">&#8220;</div>
+    <div class="physicsText">&#8221;</div>
+    <div class="physicsText">...built on?</div>
+    <div class="physicsBox html">Device Element</div>
+    <div class="physicsBox css">CSS Transforms</div>
+    <div class="physicsBox js">Web Sockets</div>
+    <div class="physicsBox js">Canvas 2D</div>
+    <div class="physicsBox html">Microdata</div>
+    <div class="physicsBox js">Web Workers</div>
+    <div class="physicsBox css">CSS Transitions</div>
+    <div class="physicsBox js">Geolocation</div>
+    <div class="physicsBox js">Web Storage</div>
+    <div class="physicsBox css">CSS3</div>
+    <div class="physicsBox html">Audio</div>
+    <div class="physicsBox css">Web Fonts</div>
+    <div class="physicsBox js">Notifications</div>
+    <div class="physicsBox html">Video</div>
+    <div class="physicsBox js">WebGL</div>
+    <div class="physicsBox html">SVG</div>
+
+    <div class="physicsBox html"><span class="html5">HTML5</span> Spec</div>
+
+    <div class="physicsBoxMask">HTML5</div>
+  <section>
+</div>
+<script>
+  $(window).bind('load', function() {
+    var slide = document.getElementById('slide-physics');
+    $(slide).find('.hidden').removeClass('hidden');
+    var pb = new PhysicsBox(slide);
+  });
+</script>
+
+
+<!--
+ *
+ * Current Status
+ *
+-->
+<div class="slide">
+  <header>Google Chrome: Where are we now?</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <img src="static/images/chrome-logo-sliced.jpg" />
+      <ul>
+        <li><strong>70+</strong> million users
+        <li><strong>10.76%</strong> adoption on <a target="_blank" href="http://gs.statcounter.com">gs.statcounter.com</a></li>
+        <li><strong>26 / 28</strong> tracked features on <a target="_blank" href="http://html5readiness.com/">html5readiness.com/</a></li>
+        <li><strong>92%</strong> support in Chrome 7 on <a target="_blank" href="http://caniuse.com">caniuse.com</a></li>
+        <li>So start writing <strong>rich</strong>, <strong>beautiful</strong> web apps!</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * SECTION: Canvas
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Section 1</div>
+      <h2>The canvas element</h2>
+      <p>Low level control over rendering</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Canvas code samples
+ *
+-->
+<div class="slide">
+  <header>Coding on the Canvas</header>
+  <section>
+    <div>
+      <pre>var canvas = document.getElementById("canvas2d");
+var context = canvas.<b>getContext</b>("2d");</pre>
+      <div class="hbox">
+        <img class='canvasCodeIcon' draggable="false" src="static/images/line.png"/>
+        <div class="flex vbox boxcenter">
+          <pre>context.<b>moveTo</b>(x1, y1);
+context.<b>lineTo</b>(x2, y2);</pre>
+        </div>
+      </div>
+      <div class="hbox">
+        <img class='canvasCodeIcon' draggable="false" src="static/images/circle.png" />
+        <div class="flex vbox boxcenter">
+          <pre>context.<b>arc</b>(x, y, r, Math.PI * 1/2, Math.PI * 3/2, false);</pre>
+        </div>
+      </div>
+      <div class="hbox">
+        <img class='canvasCodeIcon' draggable="false" src="static/images/brush.png" />
+        <div class="flex vbox boxcenter">
+          <pre>var id = context.<b>getImageData</b>(0, 0, width, height).<b>data</b>;
+var r = id[0], g = id[1], b = id[2], a = id[3] / 255;</pre>
+        </div>
+      </div>
+      <pre>context.<b>lineWidth</b> = 20;
+context.<b>lineCap</b> = "round";
+context.<b>strokeStyle</b> = "rgba(255, 0, 0, 0.7)";
+context.<b>stroke</b>();</pre>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Canvas drawing examples
+ *
+-->
+<div class="slide" id="slide-drawing">
+  <header>Drawing on the Canvas</header>
+  <section>
+    <div class="hcenter">
+      <img draggable="false" id="drawingLine" class="clickable canvasIcon" src="static/images/line.png" />
+      <img draggable="false" id="drawingCircle" class="clickable canvasIcon" src="static/images/circle.png" />
+      <img draggable="false" id="drawingPixels" class="clickable canvasIcon" src="static/images/brush.png" />
+    </div>
+    <canvas id="drawingCanvas" class="drawingCanvas" width="830" height="350"></canvas>
+  </section>
+</div>
+<script>
+  $(document).ready(function(){
+    var slide = $('#slide-drawing');
+    var canvasDom = $('#drawingCanvas');
+    var canvasDemo = new CanvasDemo(canvasDom.get(0));
+    $('#drawingLine').click($.proxy(canvasDemo, 'drawLine'));
+    $('#drawingCircle').click($.proxy(canvasDemo, 'drawCircle'));
+    $('#drawingPixels').click($.proxy(canvasDemo, 'drawPixels'));
+    canvasDom.click($.proxy(canvasDemo, 'clear'));
+  });
+</script>
+
+
+<!--
+ *
+ * Canvas animation
+ *
+-->
+<div class="slide">
+  <header>Drawing images</header>
+  <section>
+    <script>
+      var canvasAnimationInterval = null;
+      var canvasAnimationStep = 0;
+      var canvasAnimationImage = null;
+
+      function canvasStopRotation() {
+        window.clearInterval(canvasAnimationInterval);
+        canvasAnimationInterval = null;
+      };
+
+      function canvasStepRotation(context) {
+        var image = canvasAnimationImage;
+        if (canvasAnimationStep > 1000) {
+          canvasAnimationStep = 0;
+          canvasStopRotation();
+          return;
+        }
+        canvasAnimationStep += 15;
+        context.save();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.translate(context.canvas.width / 2, context.canvas.height / 2);
+        context.rotate(canvasAnimationStep * Math.PI/180);
+        context.drawImage(image, 0 - image.width / 2, 0 - image.height / 2, image.width, image.height);
+        context.restore();
+      };
+
+      function canvasRotatePuzzle() {
+        if (canvasAnimationInterval != null) {
+          canvasStopRotation();
+          return;
+        }
+
+        var canvas = document.getElementById('canvas2danimation');
+        var context = canvas.getContext('2d');
+        canvasAnimationInterval = window.setInterval(canvasStepRotation, 30, context);
+      };
+    </script>
+    <div class="hcenter">
+      <canvas id="canvas2danimation" width="350" height="320"></canvas>
+    </div>
+    <div class="hcenter">
+      <img draggable="false" onclick="canvasRotatePuzzle();" class="clickable" src="static/images/animatedpuzzle.png" />
+    </div>
+    <script>
+      canvasAnimationImage = new Image();
+      canvasAnimationImage.src = 'static/images/puzzle.png';
+      canvasAnimationImage.addEventListener('load', function() {
+        var canvas = document.getElementById('canvas2danimation');
+        var context = canvas.getContext('2d');
+        context.drawImage(canvasAnimationImage, 25, 25);
+      }, false);
+    </script>
+  </section>
+</div>
+
+
+<!--
+ *
+ * WebGL
+ *
+-->
+<div class="slide" id="slide-webgl">
+  <header>Canvas 3D (WebGL)</header>
+  <section>
+    <pre>&lt;canvas id="canvas"&gt;&lt;/canvas&gt;
+&lt;script&gt;
+var gl = document.getElementById("canvas").<b>getContext</b>("experimental-webgl");
+gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
+&lt;/script&gt;</pre>
+    
+    <ul class="summary">
+      <li><strong><a target="_blank" href="http://webglsamples.googlecode.com/hg/aquarium/aquarium.html">Fishtank</a></strong></li>
+      <li><strong><a target="_blank" href="http://cooliris-wall.appspot.com/">Photo wall</a></strong></li>
+    </ul>
+  </section>
+</div>
+
+
+<!--
+ *
+ * SVG
+ *
+-->
+<div class="slide">
+  <header>SVG</header>
+  <section class="hcenter">
+    <pre>&lt;svg height=&quot;400&quot; width=&quot;800&quot;&gt;
+  &lt;defs&gt;
+    &lt;path id=&quot;textPath&quot; d=&quot;
+      M 100,100 C 200,0 200,400 400,300 C 600,0 600,400 800,100&quot;&gt;
+  &lt;/defs&gt;
+  &lt;text&gt;
+    &lt;tspan x=&quot;10&quot; y=&quot;160&quot;&gt;
+      &lt;textPath xlink:href=&quot;#textPath&quot;&gt;Did you know that 
+        SVG can render text along a path?&lt;/textPath&gt;
+    &lt;/tspan&gt;
+  &lt;/text&gt;
+&lt;/svg&gt;</pre>
+    <svg height="300" width="800">
+      <defs>
+        <path id="textPath" d="
+          M 50,100 
+          C 200,0 200,300 400,200
+          C 600,0 600,300 800,100">
+      </defs>
+      <text>
+        <tspan>
+          <textPath xlink:href="#textPath">Did you know that 
+            SVG can render text along a path?</textPath>
+        </tspan>
+      </text>
+    </svg>
+    <style>
+      svg text {
+        font: 40px Lobster;
+      }
+    </style>
+  </section>
+</div>
+
+<!--
+ *
+ * SECTION: Multimedia
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Section 2</div>
+      <h2>Multimedia</h2>
+      <p>A richer experience with sound and video</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ *  Video and audio
+ *
+-->
+<div class="slide">
+  <header>Going Multimedia with Audio and Video</header>
+  <section class="flex vbox boxcenter">
+    <h2>Audio</h2>
+    <pre>&lt;<b>audio</b> src="sound.ogg" <em>controls</em>&gt;&lt;/<b>audio</b>&gt;
+&lt;script&gt;
+  document.getElementById("audio").<em>muted</em>=false;
+&lt;/script&gt;</pre>
+
+    <h2>Video</h2>
+    <pre>&lt;<b>video</b> src='movie.webm' <em>autoplay</em> <em>controls</em> &gt;&lt;/<b>video</b>&gt;
+&lt;script&gt;
+  document.getElementById("video").<em>play</em>();
+&lt;/script&gt;</pre>
+  </section>
+</div>
+
+<!--
+ *
+ *  Video tag demo
+ *
+-->
+<div class="slide" id="slide-video">
+  <header>Video as a First Class Element</header>
+  <section class="flex vbox boxcenter">
+    <div class="videoControls">
+      <button class="playButton">Play</button>
+      <button class="stopButton">Stop</button>
+      <button class="cssButton">Make Fancy</button>
+      <button class="effectButton">Make Really Fancy</button>
+    </div>
+    <div class="videoContent">
+      <video src="static/video/chrome_japan_small.mp4" controls="">
+        Your browser does not support the video tag
+      </video>
+    </div>
+  </section>
+</div>
+<script>
+  $(document).ready(function() {
+    var vc = new VideoController(document.getElementById('slide-video'));
+  });
+</script>
+
+
+<!--
+ *
+ * SECTION: Processing
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Section 3</div>
+      <h2>Processing</h2>
+      <p>Storing and processing complex data</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * localStorage
+ *
+-->
+<div class="slide">
+  <header>Storing Data on the Client</header>
+  <section class="fixedtop">
+    <pre>var <em>loadedCount</em> = parseInt(<b>localStorage['loadedCount']</b> || '0') + 1;
+<b>localStorage['loadedCount']</b> = <em>loadedCount</em>;
+document.getElementById('displayLoadedCount').innerHTML = <em>loadedCount</em>;</pre>
+  </section>
+  <section>
+    <p class="callout localStorageText">
+      You've viewed this presentation on this computer
+      <strong id="displayLoadedCount">X</strong> times.
+    </p>
+  </section>
+</div>
+<script>
+  var loadedCount = parseInt(localStorage['loadedCount'] || '0') + 1;
+  localStorage['loadedCount'] = loadedCount;
+  document.getElementById('displayLoadedCount').innerHTML = loadedCount;
+</script>
+
+
+
+<!--
+ *
+ * Web Databases
+ *
+-->
+<div class="slide">
+  <header>Other Storage Options</header>
+  <section>
+    <h2>Web SQL DB:</h2>
+    <pre>var db = window.<b>openDatabase</b>("Database Name", "Database Version");
+db.<b>transaction</b>(function(tx) {
+  tx.<b>executeSql</b>(<em>"SELECT * FROM author"</em>, [], successCallback, errorCallback);
+});</pre>
+  </section>
+  <section>
+    <h2>Other:</h2>
+    <div class="hbox boxcenter">
+      <div class='otherStorage'>
+        <img src="static/images/storage-indexdb.png" /><br/>
+        Indexed DB
+      </div>
+      <div class='otherStorage'>
+        <img src="static/images/storage-fileapi.png" /><br/>
+        File API
+      </div>
+      <div class='otherStorage'>
+        <img src="static/images/storage-appcache.png" /><br/>
+        App Cache
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Worker threads
+ *
+-->
+<div class="slide far-past" id="slide-worker">
+  <header>Working Hard with Worker Threads</header>
+  <section>
+    <pre><em>main.js:</em>
+  var worker = new <b>Worker</b>(‘extra_work.js');
+  worker.<b>onmessage</b> = function (event) { alert(event.data); };
+
+<em>extra_work.js:</em>
+  <b>postMessage</b>(some_data);</pre>
+    <div class="hbox boxcenter">
+      <div class="vbox flex">
+        <p><strong>Paint here</strong> <button class='clearButton'>Clear</button></p>
+        <canvas class='workerCanvas drawingCanvas' width='400' height='280'></canvas>
+      </div>
+      <div class="vbox noflex">
+        <p><strong>Difference</strong> <button class='diffCheckbox'>Use worker</button></p>
+        <canvas class='workerDiff drawingCanvas' width='400' height='280'></canvas>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  jQuery().ready(function() {
+    var slide = document.getElementById('slide-worker');
+
+    var drawCanvas = slide.getElementsByClassName('workerCanvas')[0];
+    var diffCanvas = slide.getElementsByClassName('workerDiff')[0];
+    var ds = new DiffScheduler(slide, drawCanvas, diffCanvas);
+    var dc = new DrawingCanvas(slide);
+    dc.setColor('#36b');
+
+    var button = slide.getElementsByClassName('clearButton')[0];
+    button.addEventListener('click', function() { dc.clear(); });
+
+    var useWorker = false;
+    var checkbox = slide.getElementsByClassName('diffCheckbox')[0];
+    checkbox.addEventListener('click', function() {
+      useWorker = !useWorker;
+      if (useWorker) {
+        dc.setColor('#d00');
+        this.innerHTML = 'Stop worker';
+      } else {
+        dc.setColor('#36b');
+        this.innerHTML = 'Use worker';
+      }
+      ds.setUseWorker(useWorker);
+    });
+  });
+</script>
+
+
+<!--
+ *
+ * SECTION: Deep Integrations
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Section 4</div>
+      <h2>Deep Integrations</h2>
+      <p>Interacting with the client Operating System</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Drag and Drop
+ *
+-->
+<div class="slide" id="slide-draganddrop">
+  <header>Dragging &amp; Dropping</header>
+  <section class="noflex">
+    <pre>var elem = document.getElementById('dragElem');
+elem.addEventListener(<b>'dragstart'</b>, ..., false);
+elem.addEventListener(<b>'dragend'</b>, ..., false);
+
+var target = document.getElementById('dragTarget');
+target.addEventListener(<b>'dragenter'</b>, ..., false);
+target.addEventListener(<b>'dragleave'</b>, ..., false);
+target.addEventListener(<b>'dragover'</b>, ..., false);
+target.addEventListener(<b>'drop'</b>, ..., false);</pre>
+  </section>
+  <section class="vbox boxcenter flex">
+    <div class="hcenter">
+      <img draggable="true" class="dragObject" src='static/images/animatedpuzzle.png'/>
+    </div>
+    <div class="hbox boxcenter flex">
+      <div class="dropTarget vbox boxcenter">
+        <strong>Drop here</strong>
+      </div>
+      <div class="dropTarget vbox boxcenter">
+        <strong>No, drop here</strong>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+var slide = document.getElementById('slide-draganddrop');
+var dm = new DragManager();
+dm.addDragElements(slide.getElementsByClassName('dragObject'));
+dm.addDropElements(slide.getElementsByClassName('dropTarget'));
+</script>
+
+
+<!--
+ *
+ * Notifications
+ *
+-->
+<div class="slide" id="slide-notifications">
+  <header>Look Who's Calling - Notifications</header>
+  <section>
+    <pre>if (window.<b>webkitNotifications</b>.<b>checkPermission</b>() == 0) {
+  window.<b>webkitNotifications</b>.<b>createNotification</b>(picture, title, text).<b>show</b>();
+} else {
+  window.<b>webkitNotifications</b>.<b>requestPermission</b>();
+}</pre>
+    <p class="callout notificationText">
+      This presentation currently <strong class="displayBox">X</strong>
+      permission to display notifications.
+    </p>
+    <p class='hcenter'>
+      <button class='showButton'>Show a notification</button>
+      <button class='requestButton'>Request permission</button>
+    </p>
+  </section>
+</div>
+<script>
+$(document).ready(function() {
+  var slide = document.getElementById('slide-notifications');
+  var nm = new NotificationManager(slide);
+});
+</script>
+
+
+<!--
+ *
+ * SECTION: CSS
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Section 5</div>
+      <h2>CSS Enhancements</h2>
+      <p>Making things look good</p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Chromabrush Logo
+ *
+-->
+<div class="slide" id="slide-logo">
+  <header>New Style Options</header>
+  <section class="flex vbox boxcenter">
+<pre><b>color</b>: <span id="logoColor"></span>; <span class="controls"><em>H</em>: <input id="logoHueSlider" type="range" min="0" max="255" value="215" /> <em>S</em>: <input id="logoSatSlider" type="range" min="0" max="100" value="50" /> <em>L</em>: <input id="logoLitSlider" type="range" min="0" max="100" value="0" /></span>
+<b>background-color</b>: <span id="logoBgColor"></span>; <span class="controls"><em>H</em>: <input id="logoBgHueSlider" type="range" min="0" max="255" value="50" /> <em>S</em>: <input id="logoBgSatSlider" type="range" min="0" max="100" value="50" /> <em>L</em>: <input id="logoBgLitSlider" type="range" min="0" max="100" value="100" /></span>
+
+<b>-webkit-box-reflect</b>: below 10px -webkit-gradient(
+     linear, left top, left bottom,
+     from(transparent), to(rgba(255, 255, 255, <span id="logoReflect">0</span>)));  <span class="controls"><em>Reflection</em>: <input id="logoReflectSlider" type="range" min="0" max="100" value="0" /></span>
+<b>text-shadow</b>: <span id="logoShadow"></span>;  <span class="controls"><em>Text Shadow</em>: <input id="logoShadowSlider" type="range" min="0" max="9" value="0" /></span>
+<b>-webkit-box-shadow</b>: <span id="logoBoxShadow"></span>;  <span class="controls"><em>Box Shadow</em>: <input id="logoBoxShadowSlider" type="range" min="0" max="9" value="0" /></span>
+<b>-webkit-text-stroke</b>: <span id="logoStroke"></SPAN>; <span class="controls"><em>Radius</em>: <input id="logoStrokeSlider" type="range" min="0" max="5" value="0"></span>
+<b>border-radius</b>: <span id="logoRadius"></SPAN>; <span class="controls"><em>Radius</em>: <input id="logoRadiusSlider" type="range" min="0" max="50" value="0"></span></pre>
+    <div class="hcenter" id="logoWrap">
+      <div id="logoOutput">Hello world</div>
+    </div>
+    <br />
+    <br />
+  </section>
+</div>
+<script>
+function logoChangeColor(evt) {
+  var h = $('#logoHueSlider').val();
+  var s = $('#logoSatSlider').val();
+  var l = $('#logoLitSlider').val();
+  var color = "hsl(" + h + "," + s + "%," + l + "%)";
+  $('#logoOutput').css('color', color);
+  $('#logoColor').text(color);
+};
+
+function logoChangeBgColor(evt) {
+  var h = $('#logoBgHueSlider').val();
+  var s = $('#logoBgSatSlider').val();
+  var l = $('#logoBgLitSlider').val();
+  var color = "hsl(" + h + "," + s + "%," + l + "%)";
+  $('#logoOutput').css('background-color', color);
+  $('#logoBgColor').text(color);
+};
+
+function logoChangeReflect(evt) {
+  var r = $('#logoReflectSlider').val() / 100;
+  $('#logoWrap').css('-webkit-box-reflect',
+    "below 5px -webkit-gradient(linear, left top, left bottom, " +
+    "from(transparent), to(rgba(255, 255, 255, " + r + ")))");
+  $('#logoReflect').text(r);
+};
+
+function logoChangeShadow(evt) {
+  var s = $('#logoShadowSlider').val();
+  var css = "rgba(0, 0, 0, 0.9) 0 " + s + "px " + s + "px";
+  $('#logoOutput').css('text-shadow', css);
+  $('#logoShadow').text(css);
+};
+
+function logoChangeBoxShadow(evt) {
+  var s = $('#logoBoxShadowSlider').val();
+  var css = "rgba(0, 0, 0, 0.9) 0 " + s + "px " + s + "px";
+  $('#logoOutput').css('-webkit-box-shadow', css);
+  $('#logoBoxShadow').text(css);
+};
+
+function logoChangeStroke(evt) {
+  var s = $('#logoStrokeSlider').val();
+  var css = s + "px #000";
+  $('#logoOutput').css('-webkit-text-stroke', css);
+  $('#logoStroke').text(css);
+};
+
+function logoChangeRadius(evt) {
+  var r = $('#logoRadiusSlider').val();
+  var css = r + "px";
+  $('#logoOutput').css('border-radius', css);
+  $('#logoRadius').text(css);
+};
+
+$(document).ready(function() {
+  $('#logoHueSlider').bind('change', logoChangeColor);
+  $('#logoSatSlider').bind('change', logoChangeColor);
+  $('#logoLitSlider').bind('change', logoChangeColor);
+  $('#logoBgHueSlider').bind('change', logoChangeBgColor);
+  $('#logoBgSatSlider').bind('change', logoChangeBgColor);
+  $('#logoBgLitSlider').bind('change', logoChangeBgColor);
+  $('#logoReflectSlider').bind('change', logoChangeReflect);
+  $('#logoShadowSlider').bind('change', logoChangeShadow);
+  $('#logoBoxShadowSlider').bind('change', logoChangeBoxShadow);
+  $('#logoRadiusSlider').bind('change', logoChangeRadius);
+  $('#logoStrokeSlider').bind('change', logoChangeStroke);
+  logoChangeColor();
+  logoChangeBgColor();
+  logoChangeReflect();
+  logoChangeShadow();
+  logoChangeBoxShadow();
+  logoChangeRadius();
+  logoChangeStroke();
+});
+</script>
+
+
+<!--
+ *
+ * Transforms
+ *
+-->
+<div class="slide">
+  <header>Transforms &amp; Transitions</header>
+  <section class="flex vbox boxcenter">
+    <pre><b>-webkit-transform</b>: <em>rotate</em>(-10deg) <em>scale</em>(1.5);</pre>
+    <table class='transformTable'>
+      <tr>
+        <th>rotate(-45deg)</th>
+        <th>rotate(-15deg)</th>
+        <th>rotate(15deg)</th>
+        <th>rotate(45deg)</th>
+        <th>rotate(75deg)</th>
+      </tr>
+      <tr>
+        <td>
+          <img class='rotate1' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='rotate2' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='rotate3' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='rotate4' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='rotate5' src='static/images/puzzle-sm.png' />
+        </td>
+      </tr>
+      <tr>
+        <th>scale(0.2)</th>
+        <th>scale(0.5)</th>
+        <th>scaleX(0.5)</th>
+        <th>scaleX(2.0)</th>
+        <th>scaleY(1.5)</th>
+      </tr>
+      <tr>
+        <td>
+          <img class='scale1' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='scale2' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='scale3' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='scale4' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='scale5' src='static/images/puzzle-sm.png' />
+        </td>
+      </tr>
+      <tr>
+        <th>skewX(10deg)</th>
+        <th>skewX(20deg)</th>
+        <th>skewX(30deg)</th>
+        <th>skewX(40deg)</th>
+        <th>skewX(50deg)</th>
+      </tr>
+      <tr>
+        <td>
+          <img class='skew1' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='skew2' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='skew3' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='skew4' src='static/images/puzzle-sm.png' />
+        </td>
+        <td>
+          <img class='skew5' src='static/images/puzzle-sm.png' />
+        </td>
+      </tr>
+    </table>
+
+    <pre class="transitionExample">.myDiv { <b>-webkit-transition</b>: <em>-webkit-transform</em> 2s ease-in-out; }
+
+.myDiv:hover { <em>-webkit-transform</em>: rotate(-20deg); }</pre>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Transforms
+ *
+-->
+<div class="slide" id="slide-animations">
+  <header>Animations</header>
+  <section class="vbox flex boxcenter">
+    <pre>@-webkit-<b>keyframes</b> <em>pulse</em> {
+  <b>0%</b>   { -webkit-transform: scale(2) rotate(5deg); }
+  <b>50%</b>  { -webkit-transform: scale(5) rotate(-15deg);  }
+  <b>100%</b> { -webkit-transform: scale(2) rotate(5deg); }
+}
+
+div {
+  -webkit-<b>animation-name</b>: <em>pulse</em>;
+  -webkit-<b>animation-duration</b>: 2s;
+  -webkit-<b>animation-iteration-count</b>: infinite;
+  -webkit-<b>animation-timing-function</b>: ease-in-out;
+  -webkit-<b>animation-direction</b>: alternate;
+}</pre>
+    <div class="hcenter">
+      <example class="animationExample">Click Me!</example>
+      <p class="disclaimer hidden">
+        *Please make a better use of it. We don't want a new &lt;blink&gt; tag ;)
+      </p>
+    </div>
+  </section>
+</div>
+<script>
+  $(document).ready(function() {
+    $('#slide-animations .animationExample').click(function() {
+      $(this).text('Pulse!').addClass('pulse');
+      $('#slide-animations .disclaimer').removeClass('hidden');
+    });
+  });
+</script>
+
+<!--
+ *
+ * Fonts
+ *
+-->
+<div class="slide">
+  <header>Beautiful Fonts with <strong>@font-face</strong></header>
+  <section>
+    <pre><b>@font-face</b> {
+  font-family: <em>'Molengo'</em>;
+  src: local('Molengo'), url('fonts/Molengo.otf') format('opentype');
+}
+
+div { font-family: <em>'Molengo'</em>; }</pre>
+    <p id="ransomLetter">Stop abusing the pulse animation or else...</p>
+  </section>
+</div>
+<script>
+  var styles = {
+    'font-family': [
+        "'Molengo'", "'Yanone Kaffeesatz'", "'Droid Serif'", "'Neuton'",
+        "'OFL Sorts Mill Goudy TT'", "'Inconsolata'", "'Lobster'",
+        "'Josefin Sans Std Light'"
+    ],
+    '-webkit-transform': [
+        'rotate(2deg)', 'rotate(-2deg)', 'rotate(0)', 'rotate(1deg)',
+        'rotate(-1deg)', 'rotate(5deg)'
+    ],
+    'text-transform': [
+        'uppercase', 'lowercase'
+    ],
+    'font-weight': [
+        'bold', 'normal'
+    ],
+    'LITERAL': [
+        'color: #fff; background: #000;', 'color: #000; background: #fff;'
+    ]
+  };
+  function renderRansom() {
+    var dom = $('#ransomLetter');
+    var text = dom.text();
+    var html = [];
+    html.push("<div>");
+    for (var i = 0; i < text.length; i++) {
+      var styleText = [];
+      for (var style in styles) {
+        var randIndex = Math.floor(Math.random() * styles[style].length);
+        if (style == 'LITERAL') {
+          styleText.push(styles[style][randIndex], ' ');
+        } else {
+          styleText.push(style, ': ', styles[style][randIndex], '; ');
+        }
+      }
+      if (text[i] == ' ') {
+        html.push('</div>&nbsp;&nbsp;&nbsp;<div>');
+      } else {
+        html.push('<span style="', styleText.join(''), '">', text[i], '</span>');
+      }
+    }
+    html.push('</div>');
+    dom.html(html.join(''));
+  };
+  renderRansom();
+</script>
+
+
+<!--
+ *
+ * Flexible box model diagram
+ *
+-->
+<div class="slide" id="slide-flexbox">
+  <header>Flexible Box Model</header>
+  <section class="noflex">
+    <strong>Width:</strong> <input id="flexboxWidth" type="range" min="200" max="500" value="300" /><br/>
+    <strong>Height:</strong> <input id="flexboxHeight" type="range" min="200" max="400" value="300" />
+  </section>
+  <section>
+    <div class="hbox boxcenter">
+      <div id="flexibleBox" class="hbox boxcenter">
+        <div class="boxA noflex">&nbsp;</div>
+        <div class="boxB flex vbox boxcenter">
+          <div class="boxD">&nbsp;</div>
+        </div>
+        <div class="boxC noflex">&nbsp;</div>
+      </div>
+    </div>
+  </section>
+  <section class="noflex">
+    <info>Now CSS supports <strong>100% height</strong> and <strong>vertical centering</strong>!</info>
+  </section>
+</div>
+<script>
+function setFlexboxDimensions() {
+  $('#flexibleBox')
+      .css('width', $('#flexboxWidth').val() + "px")
+      .css('height', $('#flexboxHeight').val() + "px");
+};
+$(function() {
+  $('#flexboxWidth').bind('change', setFlexboxDimensions);
+  $('#flexboxHeight').bind('change', setFlexboxDimensions);
+  setFlexboxDimensions();
+});
+</script>
+
+
+<!--
+ *
+ * HTML5 Goodies
+ *
+-->
+<DIV class="slide">
+  <header>More HTML5 Goodies to Consider</header>
+  <section>
+    <ul class="summary">
+      <li><strong>Application Cache</strong>
+        <ul>
+          <li>offline experience
+        </ul>
+        <br/>
+      </li>
+      <li>
+        <strong>Web Sockets</strong>
+        <ul>
+          <li>multi-user scenarios (e.g. whiteboard)
+        </ul>
+        <br/>
+      </li>
+      <li>
+        <strong>Geolocation</strong>
+        <ul>
+          <li>tag location information for drawings or users
+        </ul>
+      </li>
+    </ul>
+  </section>
+</div>
+
+
+<!-- Key Take-Aways -->
+<div class="slide">
+  <header>Key Take-Aways </header>
+  <section>
+  <ul class="summary">
+    <li>HTML5 gaining momentum</li>
+    <br/>
+    <li>Browser innovation accelerating</li>
+    <br/>
+    <li>Parity with desktop apps</li>
+    <br/>
+    <li>Developer community participation essential</li>
+    </ul>
+  </section>
+</div>
+
+<!--
+ *
+ * SECTION: END
+ *
+-->
+<div class="slide transitionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">End</div>
+      <h2>Thank You!</h2>
+      <p>Any questions?</p>
+    </div>
+  </section>
+</div>
+
+
+      </div> <!-- slides -->
+    </div> <!-- presentation -->
+  </body>
+</html>
