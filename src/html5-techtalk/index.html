@@ -839,12 +839,17 @@ $(document).ready(function() {
   <header>Device Orientation</header>
   <section class="vbox boxcenter flex">
     <pre id="orientation-pre">window.addEventListener(<b>"deviceorientation"</b>, function(event) {
-  ...
+  var a = event.alpha; <b><span id="orientation-a"></span></b>
+  var b = event.beta;  <b><span id="orientation-b"></span></b>
+  var g = event.gamma; <b><span id="orientation-g"></span></b>
 }</pre>
   </section>
 </div>
 <script>
   function setOrientation(evt) {
+    if (evt.alpha) { $('#orientation-a').text('// ' + evt.alpha); }
+    if (evt.beta) { $('#orientation-b').text('// ' + evt.beta); }
+    if (evt.gamma) { $('#orientation-g').text('// ' + evt.gamma); }
     if (Math.abs(evt.gamma) > 5) {
       $('#orientation-pre').css('-webkit-transform', 'rotate(' + -evt.gamma + 'deg)');
     } else {
@@ -1124,7 +1129,11 @@ div {
 }
 
 div { font-family: <em>'Molengo'</em>; }</pre>
-    <p id="ransomLetter">Stop abusing the pulse animation or else...</p>
+    <p class="hidden" id="ransomText">HTML5 Random Ransom Note!</p>
+    <p id="ransomLetter"></p>
+    <div class="hcenter">
+      <button id="ransomButton">Regenerate</button>
+    </div>
   </section>
 </div>
 <script>
@@ -1149,8 +1158,9 @@ div { font-family: <em>'Molengo'</em>; }</pre>
     ]
   };
   function renderRansom() {
+    var dom_text = $('#ransomText');
     var dom = $('#ransomLetter');
-    var text = dom.text();
+    var text = dom_text.text();
     var html = [];
     html.push("<div>");
     for (var i = 0; i < text.length; i++) {
@@ -1172,6 +1182,7 @@ div { font-family: <em>'Molengo'</em>; }</pre>
     html.push('</div>');
     dom.html(html.join(''));
   };
+  $('#ransomButton').click(renderRansom);
   renderRansom();
 </script>
 

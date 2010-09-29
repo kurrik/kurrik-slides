@@ -796,7 +796,7 @@ NotificationManager.prototype.show = function() {
   if (!window.hasOwnProperty('webkitNotifications')) { return; }
   if (window.webkitNotifications.checkPermission() == 0) {
     window.webkitNotifications.createNotification(
-      '/static/images/chrome-icon.png', 
+      'static/images/chrome-icon.png', 
       'Hello Developers!', 
       'I am a notification').show();
   } else {
