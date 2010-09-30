@@ -236,6 +236,7 @@ pre em {
 }
 
 .sectionSlide .section {
+  text-rendering: optimizeLegibility;
   font: 30px AcknowledgementMedium;
   text-shadow: 0px 5px 0px #fff;
   color: #e66f17;
@@ -243,6 +244,7 @@ pre em {
 }
 
 .sectionSlide h2 {
+  text-rendering: optimizeLegibility;
   font-family: AcknowledgementMedium;
   text-shadow: 0px 5px 0px #fff;
   color: #146b91;

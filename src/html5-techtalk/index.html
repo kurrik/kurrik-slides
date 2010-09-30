@@ -182,11 +182,91 @@ Modifications:
   <section class="center">
     <div class="titleContent">
       <h2 class="titleTitle">
-        HTML5 and Chrome Tech Talk
+        HTML5 in Chrome
       </h2>
       <p class="titleText">
         Arne Roomann-Kurrik
       </p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Speaker
+ *
+-->
+<div class="slide">
+  <header>Who am I?</header>
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="hcenter">
+        <img class="shadowed" style="width: 300px" src="static/images/kurrik-google.png"/>
+      </div>
+      <ul>
+        <li><strong>Name:</strong> Arne Roomann-Kurrik</li>
+        <li><strong>Twitter:</strong> @kurrik</li>
+        <li><strong>Likes:</strong>
+          <ul>
+            <li>Meatballs</li>
+            <li>Working with Developers</li>
+            <li>Google Chrome (and you should too)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Current Status
+ *
+-->
+<div class="slide boxstart" id="slide-chrome">
+  <header>Reasons to like Google Chrome</header>
+  <section class="noflex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <ul>
+        <li><strong>70+</strong> million users at Google I/O in May 2010</li>
+        <li><strong>10.76%</strong> adoption on <a target="_blank" href="http://gs.statcounter.com">gs.statcounter.com</a></li>
+      </ul>
+      <div class="hcenter"><em>But most of all</em></div>
+      <ul>
+        <li>Supports <strong>tons</strong> of HTML features:
+          <ul>
+
+            <li><strong>26 / 28</strong> tracked features on <a target="_blank" href="http://html5readiness.com/">html5readiness.com</a></li>
+            <li><strong>92%</strong> support in Chrome 7 on <a target="_blank" href="http://caniuse.com">caniuse.com</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 
+ *
+-->
+<div class="slide">
+  <header>What is so great about HTML?</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <ul>
+        <li><strong>Open collaboration</strong> between lots of parties</li>
+        <li>Specification is <strong>adding new features</strong> very fast</li>
+        <li><strong>All major browsers</strong> have committed support</li>
+        <li>Great <strong>developer resources:</strong> <a href="html5rocks.com">html5rocks.com</a></li>
+      </ul>
+      <div class="hcenter"><em>But what is really amazing is:</em></div>
+      <ul>
+        <li>Can do things which <strong>were impossible</strong> a year ago</li>
+      </ul>
     </div>
   </section>
 </div>
@@ -202,11 +282,10 @@ Modifications:
     <div class="noflex vbox">
       <p class="">This presentation was built using <span class="html5">HTML5</span>:</p>
       <ul>
-        <li><strong>637 HTML elements</strong></li>
-        <li><strong>903 lines of (non-library) JavaScript</strong></li>
-        <li><strong>119 CSS rules</strong></li>
+        <li><strong>~1000 HTML elements</strong></li>
+        <li><strong>~1000 lines of (non-library) JavaScript</strong></li>
+        <li><strong>~200 CSS rules</strong></li>
       </ul>
-      <p class="hcenter">Press <span class="key">→</span> to advance.</p>
     </div>
   </section>
 </div>
@@ -316,28 +395,6 @@ Modifications:
     var pb = new PhysicsBox(slide);
   });
 </script>
-
-
-<!--
- *
- * Current Status
- *
--->
-<div class="slide">
-  <header>Google Chrome: Where are we now?</header>
-  <section class="hbox boxcenter">
-    <div class="noflex vbox boxcenter">
-      <img src="static/images/chrome-logo-sliced.jpg" />
-      <ul>
-        <li><strong>70+</strong> million users
-        <li><strong>10.76%</strong> adoption on <a target="_blank" href="http://gs.statcounter.com">gs.statcounter.com</a></li>
-        <li><strong>26 / 28</strong> tracked features on <a target="_blank" href="http://html5readiness.com/">html5readiness.com/</a></li>
-        <li><strong>92%</strong> support in Chrome 7 on <a target="_blank" href="http://caniuse.com">caniuse.com</a></li>
-        <li>So start writing <strong>rich</strong>, <strong>beautiful</strong> web apps!</li>
-      </ul>
-    </div>
-  </section>
-</div>
 
 
 <!--
@@ -597,7 +654,7 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
       <button class="effectButton">Make Really Fancy</button>
     </div>
     <div class="videoContent">
-      <video src="static/video/chrome_japan_small.mp4" controls="">
+      <video src="static/video/chrome.webm" controls="">
         Your browser does not support the video tag
       </video>
     </div>
@@ -609,6 +666,32 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
   });
 </script>
 
+<!--
+ *
+ * VIDEO+CANVAS: Demo
+ *
+-->
+<div class="slide" id="slide-video-2">
+  <header>More fun with video and canvas</header>
+  <section class="flex vbox boxcenter">
+    <div class="noflex hbox boxcenter">
+      <div class="vbox noflex">
+        <div class="videoContent">
+          <video src="static/video/chrome.webm" controls loop>
+            Your browser does not support the video tag
+          </video>
+        </div>
+        <p class="videoControls hcenter">
+          <button class="playButton">Play</button>
+          <button class="stopButton">Stop</button>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  var vc = new VideoSlide('#slide-video-2');
+</script>
 
 <!--
  *
@@ -619,7 +702,7 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
   <section class="flex hbox boxcenter">
     <div class="noflex vbox boxcenter">
       <div class="section">Section 3</div>
-      <h2>Processing</h2>
+      <h2>Data</h2>
       <p>Storing and processing complex data</p>
     </div>
   </section>
@@ -748,14 +831,28 @@ db.<b>transaction</b>(function(tx) {
  * WebSockets
  *
 -->
-<!--
-<div class="slide">
+<div class="slide" id="slide-socket">
   <header>WebSockets</header>
   <section>
-    <a href="http://bit.ly/websocket-raytracer" target="_blank">http://bit.ly/<strong>websocket-raytracer</strong></a>
+    <div class="hbox boxcenter">
+      <div class="vbox">
+        <iframe id="socketFrame" width="400" height="400" src=""></iframe>
+        <div class="hcenter"><a target="_blank" href="http://bit.ly/websocket-raytrace">http://bit.ly/websocket-raytrace</a></div>
+      </div>
+    </div>
   </section>
 </div>
--->
+<script>
+  function startSockets() {
+    $('#socketFrame').attr('src', 'http://ec2-204-236-191-115.us-west-1.compute.amazonaws.com/');
+  };
+  function stopSockets() {
+    $("#socketFrame").attr('src', '');
+  };
+  $('#slide-socket')
+    .bind('focusslide', startSockets)
+    .bind('blurslide', stopSockets);
+</script>
 
 <!--
  *
@@ -879,6 +976,28 @@ $(document).ready(function() {
   $('#slide-orientation')
     .bind('focusslide', $.proxy(startOrientationDemo))
     .bind('blurslide', $.proxy(stopOrientationDemo));
+</script>
+
+<!--
+ *
+ * ORIENTATION: Demo
+ *
+-->
+<div class="slide" id="slide-orientation-2">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div id="orientationWrap">
+        <div class="layer"><img src="static/images/chrome-layer-01.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-02.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-03.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-04.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-05.png"/></div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  var os = new OrientationSlide('#slide-orientation-2');
 </script>
 
 <!--

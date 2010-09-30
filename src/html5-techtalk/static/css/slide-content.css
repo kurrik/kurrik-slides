@@ -107,25 +107,18 @@ section {
   border: 2px solid #aaa;
 }
 
-.slide:before {
-  position: absolute;
-  width: 100%;
-  bottom: 10px;
-  font: 16px Arial;
-  color: #333;
-  text-align: center;
-  content: "HTML and Chrome";
-  font-weight: bold;
+.slide:nth-of-type(even) {
+  border-radius: 100px 20px 100px 20px;
+  -moz-border-radius: 100px 20px 100px 20px;
 }
 
-.slide:nth-of-type(even) {
-  border-radius: 60px 20px 60px 20px;
-  -moz-border-radius: 60px 20px 60px 20px;
+.slide:nth-of-type(even) header {
+  padding-left: 30px;
 }
 
 .slide:nth-of-type(odd) {
-  border-radius: 20px 60px 20px 60px;
-  -moz-border-radius: 20px 60px 20px 60px;
+  border-radius: 20px 100px 20px 100px;
+  -moz-border-radius: 20px 100px 20px 100px;
 }
 
 /*******************************************************************************
@@ -270,6 +263,13 @@ strong.html5 {
 .disclaimer {
   font: 13px Arial;
   color: #666;
+}
+
+img.shadowed {
+  -webkit-box-shadow: 0 6px 6px #333;
+  padding: 10px;
+  background: #fff;
+  border: 2px solid #666;
 }
 
 @-webkit-keyframes pulse {
@@ -719,6 +719,10 @@ strong.html5 {
   padding: 0;
 }
 
+#slide-chrome {
+  background: #fff url('../images/chrome-logo-sliced.jpg') no-repeat bottom center;
+}
+
 /*******************************************************************************
  * Video
  ******************************************************************************/
@@ -752,4 +756,28 @@ strong.html5 {
   border: 1px solid #000;
   margin: 0 auto;
   display: block;
+}
+
+/*******************************************************************************
+ * DEVICE ORIENTATION STYLES
+ ******************************************************************************/
+#orientationWrap {
+  width: 300px;
+  height: 300px;
+  position: relative;  
+}
+#orientationWrap .layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-transition-property: x, y;
+  -webkit-transition-duration: 0.1s;
+  -webkit-transition-timing-function: linear;
+}
+/*******************************************************************************
+ * WEBSOCKETS
+ ******************************************************************************/
+#socketFrame {
+  border: 0;
+  overflow: hidden;
 }

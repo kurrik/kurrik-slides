@@ -254,14 +254,14 @@ Original slides:
 
 <!--
  *
- * 3D: Intro
+ * VIDEO+CANVAS: Intro
  *
 -->
 <div class="slide sectionSlide">
   <section class="flex hbox boxcenter">
     <div class="noflex vbox boxcenter">
       <div class="section">Amazing Thing #1</div>
-      <h2 class="sectionTitle">3D</h2>      
+      <h2 class="sectionTitle">Video + Canvas</h2>      
     </div>
   </section>
 </div>
@@ -269,47 +269,29 @@ Original slides:
 
 <!--
  *
- * 3D: Demo
+ * VIDEO+CANVAS: Demo
  *
 -->
-<div class="slide">
-  <header>DEMO</header>
-  <section class="hbox boxcenter">
-    <div class="noflex vbox boxcenter">
-      Cool 3D transition demo
+<div class="slide" id="slide-video">
+  <section class="flex vbox boxcenter">
+    <div class="noflex hbox boxcenter">
+      <div class="vbox noflex">
+        <div class="videoContent">
+          <video src="static/video/chrome.webm" loop>
+            Your browser does not support the video tag
+          </video>
+        </div>
+        <p class="videoControls hcenter">
+          <button class="playButton">Play</button>
+          <button class="stopButton">Stop</button>
+        </p>
+      </div>
     </div>
   </section>
 </div>
-
-
-<!--
- *
- * 3D: CSS Transforms
- *
--->
-<div class="slide">
-  <header>CSS3 3D Transforms</header>
-  <section class="hbox boxcenter">
-    <div class="noflex vbox boxcenter">
-      3D Transforms
-    </div>
-  </section>
-</div>
-
-
-<!--
- *
- * 
- *
--->
-<div class="slide">
-  <header>WebGL</header>
-  <section class="hbox boxcenter">
-    <div class="noflex vbox boxcenter">
-      WebGL
-    </div>
-  </section>
-</div>
+<script>
+  var vc = new VideoSlide('#slide-video');
+</script>
 
 
 <!--
@@ -346,7 +328,7 @@ Original slides:
   </section>
 </div>
 <script>
-  var os = new OrientationSlide($('#slide-orientation'));
+  var os = new OrientationSlide('#slide-orientation');
 </script>
 
 

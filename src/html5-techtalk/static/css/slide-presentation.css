@@ -90,6 +90,12 @@ section,
   box-pack: center;
 }
 
+.boxstart {
+  -webkit-box-pack: start;
+  -moz-box-pack: start;
+  box-pack: start;
+}
+
 .hcenter {
   text-align: center;
 }     
