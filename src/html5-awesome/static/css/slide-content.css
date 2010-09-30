@@ -1,0 +1,330 @@
+/**
+ * Copyright 2010 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/*******************************************************************************
+ * PRESENTATION STYLES
+ ******************************************************************************/
+body {
+  font: 30px Arial;
+  background: #000;
+}
+
+header {
+  font: 44px Arial;
+  letter-spacing: -.05em;
+  color: #000;
+  font-weight: normal;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+}
+
+section {
+  font: 30px Arial;
+  font-weight: normal;
+  color: #3f3f3f;
+  text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+}
+
+.presentation {
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+  background: -moz-linear-gradient(top, #fff, #eee);
+}
+
+.presentationCounter {
+  color: #666;
+  font: 100px 'Yanone Kaffeesatz';
+  letter-spacing: 1px;
+}
+
+.slide {
+  background: #fff;
+  border: 2px solid #ccc;
+}
+
+.slide:nth-of-type(even) {
+  border-radius: 120px 20px 120px 20px;
+  -moz-border-radius: 120px 20px 120px 20px;
+}
+
+.slide:nth-of-type(even) header {
+  padding-left: 30px;
+}
+
+.slide:nth-of-type(odd) {
+  border-radius: 20px 120px 20px 120px;
+  -moz-border-radius: 20px 120px 20px 120px;
+}
+
+/*******************************************************************************
+ * GENERIC STYLES
+ ******************************************************************************/
+h2 {
+ margin: 5px 0 0 0;
+ padding: 0;
+ color: #000;
+}
+
+button {
+  font: 20px Verdana;
+}
+
+a {
+  color: #00d;
+  text-decoration: none;
+  text-shadow: rgba(0, 0, 0, 0.4) 1px 1px 2px;
+  -webkit-text-stroke: 1px rgba(255,255,255, 0.5);
+}
+a strong {
+  color: #00d;
+  font-weight: bold;
+}
+
+p,
+ul {
+  margin: 10px 0;
+  padding: 5px;
+}
+
+li {
+  margin: 0 0 0 30px;
+  padding: 5px;
+}
+
+strong {
+  color: #000;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.disabled {
+  color: #aaa;
+}
+
+img.clickable {
+  border: 3px solid transparent;
+  border-radius: 30px;
+}
+
+img.shadowed {
+  -webkit-box-shadow: 0 6px 6px #333;
+  padding: 10px;
+  background: #fff;
+  border: 2px solid #666;
+}
+
+img.clickable:hover {
+  border: 3px solid #36b;
+  -webkit-transition-property: border-color;
+  -webkit-transition-duration: 0.6s;
+  -webkit-transition-timing-function: ease-in-out;
+
+  -moz-transition-property: border-color;
+  -moz-transition-duration: 0.6s;
+  -moz-transition-timing-function: ease-in-out;
+}
+
+pre {
+  font: 20px 'Inconsolata';
+  color: #000;
+  text-align: left;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: rgba(0, 255, 0, 0.05);
+  border: 2px solid rgba(0, 255, 0, 0.2);
+}
+
+pre b {
+  font-weight: normal;
+  color: #c61800;
+  text-shadow: #c61800 0 0 1px;
+  letter-spacing: -1px;
+}
+
+pre em {
+  font-weight: normal;
+  font-style: normal;
+  color: #18a600;
+  text-shadow: #18a600 0 0 1px;
+}
+
+.todo {
+  background: #d00;
+  border-radius: 10px;
+  padding: 5px;
+  color: #fff;
+}
+
+.block {
+  font-family: AcknowledgementMedium;
+  text-transform: uppercase;
+  color: #767b04;
+  font-size: 150px;
+}
+
+/*******************************************************************************
+ * PREFLIGHT STYLES
+ ******************************************************************************/
+#slide-preflight .good {
+  color: #0d0;
+}
+#slide-preflight .bad {
+  color: #d00;
+}
+#slide-preflight .warning {
+  color: #f93
+}
+#slide-preflight .notice {
+  color: #06f;
+}
+#slide-preflight .explanation {
+  font-size: 14px;
+  color: #000;
+}
+#slide-preflight section {
+  width: 60%;
+  margin: 0 auto;
+}
+#slide-preflight .feature {
+  padding-top: 15px;
+}
+
+/*******************************************************************************
+ * MISC TITLE CARD SLIDES
+ ******************************************************************************/
+.transitionSlide .section {
+  text-shadow: 2px 2px 4px #999;
+  color: #fff;
+  -webkit-text-stroke: 1px #000;
+  -webkit-transform: rotate(-15deg);
+  position: relative;
+  left: -50px;
+  font-weight: bold;
+  display: inline-block;
+}
+.transitionSlide p {
+  margin: 0;
+  padding: 0;
+}
+
+.sectionSlide {
+  background: #f2f69c;  
+  color: #767b04;
+  text-align: center;
+}
+
+.sectionSlide .section {
+  font: 30px AcknowledgementMedium;
+  text-shadow: 0px 5px 0px #fff;
+  color: #e66f17;
+  line-height: 20px;
+}
+
+.sectionSlide h2 {
+  font-family: AcknowledgementMedium;
+  text-shadow: 0px 5px 0px #fff;
+  color: #146b91;
+  font-size: 80px;
+}
+
+#slide-chrome {
+  background: #fff url('../images/chrome-logo-sliced.jpg') no-repeat bottom center;
+}
+/*******************************************************************************
+ * TITLE STYLES
+ ******************************************************************************/
+@font-face {
+  font-family: "AcknowledgementMedium";
+  src: url("http://openfontlibrary.org/content/benweiner/260/Acknowledgement.otf") format("opentype");
+  font-weight:  500;
+  font-style:   normal;
+  font-variant: normal;
+  font-stretch: normal;
+}
+ 
+.titleSlide {
+  background: #f2f69c;  
+}
+
+.titleContent {
+  font-family: AcknowledgementMedium;
+  text-transform: uppercase;
+  color: #767b04;
+  text-shadow: 0px 5px 0px #fff;
+}
+
+.titleContent {
+  text-align: center;
+  color: #767b04;
+}
+
+.titleContent span {
+  display: block;
+  line-height: 82%;
+}
+.titleContent span:nth-child(1) {
+  font-size: 192px;
+  color: #e66f17;
+  line-height: 70%;
+}
+.titleContent span:nth-child(2) {
+  font-size: 112px;
+  color: #e66f17;
+}
+.titleContent span:nth-child(3) {
+  font-size: 144px;
+  color: #e66f17;
+}
+.titleContent span:nth-child(4) {
+  font-size: 90px;
+}
+.titleContent span:nth-child(5) {
+  font-size: 90px;
+}
+.titleContent span:nth-child(6) {
+  font-size: 39px;
+  color: #146b91;
+}
+.titleContent span:nth-child(7) {
+  font-size: 152px;
+  color: #146b91;
+}
+
+/*******************************************************************************
+ * DEVICE ORIENTATION STYLES
+ ******************************************************************************/
+#orientationWrap {
+  width: 300px;
+  height: 300px;
+  position: relative;  
+}
+#orientationWrap .layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  -webkit-transition-property: x, y;
+  -webkit-transition-duration: 0.1s;
+  -webkit-transition-timing-function: linear;
+}

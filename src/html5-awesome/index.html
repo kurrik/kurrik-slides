@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Original slides:
+    Arne Roomann-Kurrik 
+
+-->
+<html>
+  <head>
+    <title>4 Awesome Things</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <script src="static/js/box2d.min.js"></script>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/slide-presentation.js"></script>
+    <script src="static/js/slide-content.js"></script>
+    <link rel="stylesheet" href="static/css/slide-presentation.css" />
+    <link rel="stylesheet" href="static/css/slide-content.css" />
+    <link href='http://fonts.googleapis.com/css?family=Molengo|Yanone+Kaffeesatz|Droid+Serif|OFL+Sorts+Mill+Goudy+TT|Inconsolata|Lobster|Cantal|Josefin+Sans+Std+Light' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="presentation">
+      <div class="slides">
+
+<!--
+ *
+ * Preflight
+ *
+-->
+<div class="slide transitionSlide" id="slide-preflight">
+  <section class="flex vbox boxcenter">
+      <h2>Preflight</h2>
+      <div id="feature-webgl" class="hidden good feature">
+        <div><img src='static/images/icon-ok.png'/> WebGL is enabled</div>
+      </div>
+      <div id="feature-no-webgl" class="hidden bad feature">
+        <div><img src='static/images/icon-error.png'/> WebGL is disabled</div>
+        <div class="explanation">
+          You will not be able to see the WebGL demo
+          later in the slide deck.  If using Google Chrome, you will likely 
+          need to run the Chrome executable using the 
+          <code>--enable-webgl</code> flag.
+        </div>
+      </div>
+
+      <div id="browser-webkit" class="hidden good feature">
+        <div><img src='static/images/icon-ok.png'/> Webkit</div>
+        <div class="explanation">
+          If using Google Chrome, you will likely need the Dev channel to see
+          all of the functionality in this presentation.  If you are using
+          Safari, you will likely need a nightly build of Webkit in order to
+          see all of the functionality in this presentation.
+        </div>
+      </div>
+      <div id="browser-mozilla" class="hidden warning feature">
+        <div><img src='static/images/icon-warning.png'/> Mozilla</div>
+        <div class="explanation">
+          You are running a Mozilla browser.  While such browsers generally have
+          excellent support for HTML5 features, this presentation has only
+          been tested using Webkit browsers such as 
+          <a href="http://www.google.com/chrome">Google Chrome</a> or 
+          <a href="http://www.apple.com/safari/">Safari</a>.
+          Eventually we hope to add Mozilla as a supported browser for this 
+          presentation.
+        </div>
+      </div>
+      <div id="browser-other" class="hidden bad feature">
+        <div><img src='static/images/icon-error.png'/> Other browser</div>
+        <div class="explanation">
+          You are running a browser that has not been tested with this 
+          presentation.  You may not be able to run some or all of the samples
+          listed here.  While we want to add support for as many browsers as
+          possible, currently we only support Webkit-based browsers such as
+          <a href="http://www.google.com/chrome">Google Chrome</a> or 
+          <a href="http://www.apple.com/safari/">Safari</a>.
+        </div>
+      </div>
+
+</div>
+<script>
+  function hide(id) {
+    $('#' + id).addClass('hidden');
+  }
+  function unhide(id) {
+    $('#' + id).removeClass('hidden');
+  };
+  function checkWebGL() {
+    try {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('webgl');
+      if (context) {
+        unhide('feature-webgl');
+        return;
+      }
+    } catch(e) {}
+    unhide('feature-no-webgl');
+  };
+  function checkBrowser() {
+    if ($.browser.webkit) {
+      unhide('browser-webkit');
+    } else if ($.browser.mozilla) {
+      unhide('browser-mozilla');
+    } else {
+      unhide('browser-other');
+    }
+  };
+
+  $(document).ready(function() {
+    checkBrowser();
+    checkWebGL();
+  });
+</script>
+
+<!--
+ *
+ * Session Title
+ *
+-->
+<div class="slide titleSlide">
+  <section class="center boxcenter">
+    <div class="titleContent">
+      <span>Four</span>
+      <span>amazing</span>
+      <span>things</span>
+      <span>you can do</span>
+      <span>with html</span>
+      <span>and use in Google Chrome</span>
+      <span>today</span>
+    </div>
+  </section>
+</div>
+
+<!--
+ *
+ * Agenda
+ *
+-->
+<div class="slide">
+  <header>We will be covering...</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <ul>
+        <li class="disabled">Agenda</li>
+        <li>Who am I?</li>
+        <li>Resources / Facts</li>
+        <li>Demos
+          <ul>
+            <li>Amazing Thing #1</li>
+            <li>Amazing Thing #2</li>
+            <li>Amazing Thing #3</li>
+            <li>Amazing Thing #4</li>
+          </ul>
+        </li>
+        <li>Conclusion / Q&amp;A
+      </ul>
+      <p><strong>Please ask questions!</strong></p>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Speaker
+ *
+-->
+<div class="slide">
+  <header>Who am I?</header>
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="hcenter">
+        <img class="shadowed" style="width: 300px" src="static/images/kurrik-google.png"/>
+      </div>
+      <ul>
+        <li><strong>Name:</strong> Arne Roomann-Kurrik</li>
+        <li><strong>Twitter:</strong> @kurrik</li>
+        <li><strong>Likes:</strong>
+          <ul>
+            <li>Meatballs</li>
+            <li>Working with Developers</li>
+            <li>Google Chrome (and you should too)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Current Status
+ *
+-->
+<div class="slide boxstart" id="slide-chrome">
+  <header>Reasons to like Google Chrome</header>
+  <section class="noflex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <ul>
+        <li><strong>70+</strong> million users at Google I/O in May 2010</li>
+        <li><strong>10.76%</strong> adoption on <a target="_blank" href="http://gs.statcounter.com">gs.statcounter.com</a></li>
+      </ul>
+      <div class="hcenter"><em>But most of all</em></div>
+      <ul>
+        <li>Supports <strong>tons</strong> of HTML features:
+          <ul>
+
+            <li><strong>26 / 28</strong> tracked features on <a target="_blank" href="http://html5readiness.com/">html5readiness.com</a></li>
+            <li><strong>92%</strong> support in Chrome 7 on <a target="_blank" href="http://caniuse.com">caniuse.com</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 
+ *
+-->
+<div class="slide">
+  <header>What is so great about HTML?</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <ul>
+        <li><strong>Open collaboration</strong> between lots of parties</li>
+        <li>Specification is <strong>adding new features</strong> very fast</li>
+        <li><strong>All major browsers</strong> have committed support</li>
+        <li>Great <strong>developer resources:</strong> <a href="html5rocks.com">html5rocks.com</a></li>
+      </ul>
+      <div class="hcenter"><em>But what is really amazing is:</em></div>
+      <ul>
+        <li>Can do things which <strong>were impossible</strong> a year ago</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 3D: Intro
+ *
+-->
+<div class="slide sectionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Amazing Thing #1</div>
+      <h2 class="sectionTitle">3D</h2>      
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 3D: Demo
+ *
+-->
+<div class="slide">
+  <header>DEMO</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      Cool 3D transition demo
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 3D: CSS Transforms
+ *
+-->
+<div class="slide">
+  <header>CSS3 3D Transforms</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      3D Transforms
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * 
+ *
+-->
+<div class="slide">
+  <header>WebGL</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      WebGL
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * ORIENTATION: Intro
+ *
+-->
+<div class="slide sectionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Amazing Thing #2</div>
+      <h2 class="sectionTitle">Orientation</h2>      
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * ORIENTATION: Demo
+ *
+-->
+<div class="slide" id="slide-orientation">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div id="orientationWrap">
+        <div class="layer"><img src="static/images/chrome-layer-01.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-02.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-03.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-04.png"/></div>
+        <div class="layer"><img src="static/images/chrome-layer-05.png"/></div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  var os = new OrientationSlide($('#slide-orientation'));
+</script>
+
+
+<!--
+ *
+ * SVG: Intro
+ *
+-->
+<div class="slide sectionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="flex vbox boxcenter">
+      <div class="section">Amazing Thing #3</div>
+      <h2 class="sectionTitle">SVG</h2>      
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * SVG: Spec
+ *
+-->
+<div class="slide">
+  <header>SVG Spec</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      SVG Spec
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * WEBSOCKETS: Intro
+ *
+-->
+<div class="slide sectionSlide">
+  <section class="flex hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      <div class="section">Amazing Thing #4</div>
+      <h2 class="sectionTitle">Websockets</h2>      
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * WebSockets: Spec
+ *
+-->
+<div class="slide">
+  <header>WebSockets Spec</header>
+  <section class="hbox boxcenter">
+    <div class="noflex vbox boxcenter">
+      WebSockets
+    </div>
+  </section>
+</div>
+
+
+<!--
+ *
+ * Q&A
+ *
+-->
+<div class="slide" id="slide-qa">
+  <header>Q&amp;A</header>
+  <section>
+    Questions?
+  </section>
+</div>
+
+
+      </div> <!-- slides -->
+    </div> <!-- presentation -->
+  </body>
+</html>
