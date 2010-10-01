@@ -21,6 +21,8 @@ function Presentation(parent) {
   
   this.slides = this.DOM_PARENT.getElementsByClassName('slide');
   
+  $(this.slides).bind('contextmenu', $.proxy(this, 'onSlideClick'));
+  
   var onHashChange = jQuery.proxy(this, 'onHashChange');
   window.addEventListener('hashchange', onHashChange, false);
   
@@ -38,6 +40,14 @@ function Presentation(parent) {
     window.location.hash = "start";
   }
 
+};
+
+Presentation.prototype.onSlideClick = function(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  this.nextSlide();
+  if (this.ONHASHCHANGE_SUPPORTED == false) { this.onHashChange(); }
+  return false;
 };
 
 Presentation.prototype.onHashChange = function(evt) {
