@@ -107,6 +107,15 @@ section {
   border: 2px solid #aaa;
 }
 
+.slide:before {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  content: "goo.gl/WQOV  #devfest";
+  bottom: 10px;
+  font: 14px Arial;
+}
+
 .slide:nth-of-type(even) {
   border-radius: 100px 20px 100px 20px;
   -moz-border-radius: 100px 20px 100px 20px;
