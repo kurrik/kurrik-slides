@@ -1058,7 +1058,7 @@ function VideoPhysicsController(parent, width, height) {
   window.addEventListener('deviceorientation', this._proxyTilt, false);
 
   this._video = document.createElement('video');
-  this._video.addEventListener('canplaythrough', $.proxy(this, '_onVideoLoaded'), false);
+  this._video.addEventListener('canplay', $.proxy(this, '_onVideoLoaded'), false);
   this._video.addEventListener('ended', $.proxy(this, '_onVideoEnded'), false);  
   this._video.loop = true;
   this._video.autoplay = true;
