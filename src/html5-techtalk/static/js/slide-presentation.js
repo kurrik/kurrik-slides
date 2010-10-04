@@ -21,7 +21,7 @@ function Presentation(parent) {
   
   this.slides = this.DOM_PARENT.getElementsByClassName('slide');
   
-  $(this.slides).bind('contextmenu', $.proxy(this, 'onSlideClick'));
+  //$(this.slides).bind('contextmenu', $.proxy(this, 'onSlideClick'));
   
   var onHashChange = jQuery.proxy(this, 'onHashChange');
   window.addEventListener('hashchange', onHashChange, false);

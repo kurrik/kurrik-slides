@@ -933,121 +933,218 @@ VideoController.prototype.processEffectFrame = function() {
 };
 
 /*******************************************************************************
- * VIDEO CONTROLLER
+ * VIDEO TILES
  ******************************************************************************/
-var VideoSlide = function(slide) {
-  this._padding = 50;
-  this._mouseX = 0;
-  this._mouseY = 0;
+function VideoTile(src, dest, width, height, x, y) {
+  this._src = src;
+  this._dest = dest;
+  this.width = width;
+  this.height = height;
+  this._hW = width / 2;
+  this._hH = height / 2;
+  this._srcX = x;
+  this._srcY = y;
+  this.x = (dest.width / 2) - (src.width / 2) + x + this._hW;
+  this.y = dest.height - (src.width / 2) + y + this._hH;
+  this.r = 0;
+};
+
+VideoTile.prototype.draw = function() {
+  var context = this._dest.getContext('2d');
+  context.save();
+  context.translate(this.x + this._hW, this.y + this._hH);
+  context.rotate(this.r);
+  context.drawImage(this._src, this._srcX, this._srcY, this.width, 
+      this.height, -this._hW, -this._hH, this.width, this.height);
+  context.restore();
+};
+
+function PhysicsSimulation(width, height) {
+  this.ACCURACY = 20;
   
-  this._slide = $(slide);
-  this._video = this._slide.find('video');
-  this._video
-      .bind('canplay', $.proxy(this, 'onVideoLoaded'))
-      .bind('play', $.proxy(this, 'onPlayClicked'))
-      .bind('ended', $.proxy(this, 'onEnded'));
+  var padding = 100;
+  var aabb = new b2AABB();
+  aabb.minVertex.Set(-padding, -padding);
+  aabb.maxVertex.Set(width + padding, height + padding);
   
-  this._buttonPlay = this._slide.find('.playButton');
-  this._buttonPlay
-      .bind('click', $.proxy(this, 'onPlayClicked'))
-      .addClass('hidden');
+  var gravity = new b2Vec2(0, 100);
+  var sleep = false;
+  this._world = new b2World(aabb, gravity, sleep);
+  console.log(this._world);
   
-  this._buttonStop = this._slide.find('.stopButton');
-  this._buttonStop
-      .bind('click', $.proxy(this, 'onStopClicked'))
-      .addClass('hidden');
+  this._createBarrier(0, -50, width, 50);                  // Ceiling
+  this._createBarrier(0, height + 50, width, 50);          // Ground
+  this._createBarrier(-50, height / 2, 50, height);        // Left wall
+  this._createBarrier(width + 50, height / 2, 50, height); // Right wall
+};
+
+PhysicsSimulation.prototype.setGravity = function(x, y) {
+  var gravity = new b2Vec2(x, y);
+  this._world.m_gravity = gravity;
+};
+
+PhysicsSimulation.prototype._createBarrier = function(x, y, w, h) {
+  var shape = new b2BoxDef();
+  shape.extents.Set(w, h);
+  shape.restitution = 0.0;
+  shape.friction = 10;
   
-  this._domVideo = this._video.get(0);
-  if (this._domVideo.readyState == this._domVideo.HAVE_FUTURE_DATA) {
-    this.onVideoLoaded();
-  }
-};
-
-VideoSlide.prototype.onMouseMove = function(evt) {
-  this._mouseX = evt.offsetX;
-  this._mouseY = evt.offsetY;
-};
-
-VideoSlide.prototype.onEnded = function() {
-  var src = this._domVideo.src;
-  this._domVideo.src = src;
-};
-
-VideoSlide.prototype.onVideoLoaded = function() {
-  this._width = this._domVideo.videoWidth;
-  this._height = this._domVideo.videoHeight;  
-  window.setTimeout($.proxy(this, 'initCanvas'), 10);
-};
-
-VideoSlide.prototype.initCanvas = function() {
-  this._canvasOutput = $('<canvas></canvas>')
-      .addClass('hidden')
-      .bind('mousemove', $.proxy(this, 'onMouseMove'));
-  var domOutput = this._canvasOutput.get(0);
-  domOutput.width = this._width + (this._padding * 2);
-  domOutput.height = this._height + (this._padding * 2);
-  console.log('setting video dim', domOutput.width, domOutput.height);
-  this._domVideo.parentNode.insertBefore(domOutput, this._domVideo);
+  var body = new b2BodyDef();
+  body.AddShape(shape);
+  body.position.Set(x, y);
   
-  this._canvasBuffer = $('<canvas></canvas>').addClass('hidden');
-  var domBuffer = this._canvasBuffer.get(0);
-  domBuffer.width = this._width;
-  domBuffer.height = this._height;
-  
-  this._contextOutput = domOutput.getContext('2d');
-  this._contextBuffer = domBuffer.getContext('2d');   
-  this._buttonPlay.removeClass('hidden');
+  return this._world.CreateBody(body);
 };
 
-VideoSlide.prototype.onPlayClicked = function() {
-  this._domVideo.play();
-  this._buttonPlay.addClass('hidden');
-  this._video.addClass('hidden');
-  this._buttonStop.removeClass('hidden');
-  this._canvasOutput.removeClass('hidden');
-
-  this.processEffectFrame();
-  if (!this._interval) {
-    this._frame = 0;
-    this._interval = window.setInterval($.proxy(this, 'processEffectFrame'), 33);
-  }
-};
-
-VideoSlide.prototype.onStopClicked = function() {
-  this._domVideo.pause();
-  this._buttonPlay.removeClass('hidden');
-  this._video.removeClass('hidden');
-  this._buttonStop.addClass('hidden');
-  this._canvasOutput.addClass('hidden');
-
-  window.clearInterval(this._interval);
-  this._interval = null;
-  this._frame = 0;
-};
-
-VideoSlide.prototype.processEffectFrame = function() {
-  this._frame += 1;
-  this._contextBuffer.drawImage(this._domVideo, 0 ,0);
-  var domBuffer = this._canvasBuffer.get(0);
-  var domOutput = this._canvasOutput.get(0);
-  this._contextOutput.clearRect(0, 0, domOutput.width, domOutput.height);
-  var tilesize = 32;
-  var tilex = this._width / tilesize;
-  var tiley = this._height / tilesize;
-  var dw = tilesize;
-  var dh = tilesize;
-  var sw = tilesize;
-  var sh = tilesize;
-  for (var x = 0; x < tilex; x++) {
-    for (var y = 0; y < tiley; y++) {
-      var sx = x * tilesize;
-      var sy = y * tilesize;
-      var dx = sx + this._padding;
-      var dy = Math.round(sy + Math.sin((this._mouseX + x) / 20.0) * 4.0 * x) +
-               this._padding;
-
-      this._contextOutput.drawImage(domBuffer, sx, sy, sw, sh, dx, dy, dw, dh);
+PhysicsSimulation.prototype.drawWireFrame = function(canvas) {
+  var context = canvas.getContext('2d');
+  for (var b = this._world.m_bodyList; b; b = b.m_next) {
+    for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
+      this._drawShape(s, context);
     }
+  }
+};
+
+PhysicsSimulation.prototype._drawShape = function(shape, context) {
+  context.beginPath();
+  switch (shape.m_type) {
+    case b2Shape.e_polyShape:
+      var poly = shape;
+      var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
+      context.moveTo(tV.x, tV.y);
+      for (var i = 0; i < poly.m_vertexCount; i++) {
+        var v = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[i]));
+        context.lineTo(v.x, v.y);
+      }
+      context.lineTo(tV.x, tV.y);
+      break;
+  }
+  context.stroke();
+};
+
+PhysicsSimulation.prototype.createBox = function(x, y, w, h) {
+  var shape = new b2BoxDef();
+  shape.density = 1000;
+  shape.friction = 0.1;
+  shape.restitution = 0;
+  shape.extents.Set(w / 2.0, h / 2.0);
+  
+  body = new b2BodyDef();
+  body.linearVelocity = new b2Vec2(0, 0);
+  body.linearDamping = 0;
+  body.angularDamping = 0;
+  body.AddShape(shape);
+  body.position.Set(x, y);
+  
+  var box = this._world.CreateBody(body);
+  return box;
+};
+
+PhysicsSimulation.prototype.step = function() {
+  var time = new Date().getTime();
+  var delta = 0;
+  if (this._lastRender == null) {
+    this._lastRender = time;
+    this._startTime = time;
+  } else {
+    delta = (time - this._lastRender) / 1000;
+    this._lastRender = time;
+  }
+  this._world.Step(delta, this.ACCURACY);
+};
+
+function VideoPhysicsController(parent, width, height) {
+  this._proxyTilt = $.proxy(this, '_onTilt'); 
+  window.addEventListener('deviceorientation', this._proxyTilt, false);
+
+  this._video = document.createElement('video');
+  this._video.addEventListener('canplaythrough', $.proxy(this, '_onVideoLoaded'), false);
+  this._video.addEventListener('ended', $.proxy(this, '_onVideoEnded'), false);  
+  this._video.loop = true;
+  this._video.autoplay = true;
+  this._video.src = 'static/video/chrome.webm';
+  this._video.style.display = 'none';
+  parent.appendChild(this._video);
+  
+  this._buffer = document.createElement('canvas');
+  this._output = document.createElement('canvas');
+  
+  this._output.width = width;
+  this._output.height = height;
+  parent.appendChild(this._output);
+  
+  this._physics = new PhysicsSimulation(width, height);
+    
+  this._tiles = [];
+};
+
+VideoPhysicsController.prototype._onVideoEnded = function() {
+  console.log('ended');
+  this.stop();
+};
+
+VideoPhysicsController.prototype._onTilt = function(evt) {
+  var x = Math.abs(evt.gamma) > 5 ? 200 * evt.gamma : 0;
+  var y = Math.abs(evt.beta) > 10 ? 700 - (200 * -evt.beta) : 700;
+  this._physics.setGravity(x, y);
+};
+
+VideoPhysicsController.prototype._onVideoLoaded = function() {
+  console.log('video loaded');
+  this._buffer.width = this._video.videoWidth;
+  this._buffer.height = this._video.videoHeight;
+  
+  var tile_size_x = 64;
+  var tile_size_y = 64;
+  var tiles_x = Math.floor(this._video.videoWidth / tile_size_x);
+  var tiles_y = Math.floor(this._video.videoHeight / tile_size_y);
+  
+  for (var x = 0; x < tiles_x; x++) {
+    for (var y = 0; y < tiles_y; y++) {
+      var tile = new VideoTile(this._buffer, this._output, tile_size_x, 
+          tile_size_y, x * tile_size_x, y * tile_size_y);
+      var mass = this._physics.createBox(tile.x, tile.y, tile.width, 
+          tile.height);
+      this._tiles.push({tile: tile, mass: mass});
+    }
+  }
+  
+  this._video.play();
+  
+  if (!this._interval) {
+    this._interval = window.setInterval($.proxy(this, '_processFrame'), 20);
+  }
+};
+
+VideoPhysicsController.prototype.stop = function() {
+  window.clearInterval(this._interval);  
+  this._interval = null;
+  this._video.pause();
+  window.removeEventListener('deviceorientation', this._proxyTilt, false);
+  delete this._video;
+  delete this._physics;
+};
+
+VideoPhysicsController.prototype._processFrame = function() {
+  if (this._video.duration - this._video.currentTime < 0.5) {
+    this.stop();
+    return;
+  }
+  var bufferContext = this._buffer.getContext('2d');
+  bufferContext.drawImage(this._video, 0, 0);
+  var outputContext = this._output.getContext('2d');
+  outputContext.clearRect(0, 0, this._output.width, this._output.height);
+  this._physics.step();
+  
+  //this._physics.drawWireFrame(this._output);
+  
+  for (var i = 0; i < this._tiles.length; i++) {
+    var mass = this._tiles[i].mass;
+    var tile = this._tiles[i].tile;
+    tile.x = mass.m_position0.x - (tile.width / 2);
+    tile.y = mass.m_position0.y - (tile.height / 2);
+    tile.r = mass.m_rotation;
+    tile.draw();
   }
 };
 

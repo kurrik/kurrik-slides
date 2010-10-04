@@ -666,32 +666,6 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
   });
 </script>
 
-<!--
- *
- * VIDEO+CANVAS: Demo
- *
--->
-<div class="slide" id="slide-video-2">
-  <header>More fun with video and canvas</header>
-  <section class="flex vbox boxcenter">
-    <div class="noflex hbox boxcenter">
-      <div class="vbox noflex">
-        <div class="videoContent">
-          <video src="static/video/chrome.webm" controls loop>
-            Your browser does not support the video tag
-          </video>
-        </div>
-        <p class="videoControls hcenter">
-          <button class="playButton">Play</button>
-          <button class="stopButton">Stop</button>
-        </p>
-      </div>
-    </div>
-  </section>
-</div>
-<script>
-  var vc = new VideoSlide('#slide-video-2');
-</script>
 
 <!--
  *
@@ -912,6 +886,113 @@ dm.addDropElements(slide.getElementsByClassName('dropTarget'));
 
 <!--
  *
+ * Drag and Drop File Access
+ *
+-->
+<div class="slide" id="slide-dndfiles">
+  <header>The Benefits of Native D&amp;D Events</header>
+  <section class="noflex">
+    <pre>var reader = new <b>FileReader</b>();
+reader.onload = function(evt) {
+  document.querySelector('img').src = <b>evt.target.result</b>;
+};
+
+function onDrop(evt) {
+  <b>reader.readAsDataURL</b>(<b>evt.dataTransfer.files[0]</b>);
+};</pre>
+  </section>
+  <section class="vbox boxcenter flex">
+    <div class="hbox boxcenter flex">
+      <div class="dropTarget vbox boxcenter">
+        <strong>Drop a file here</strong>
+      </div>
+      <div class="vbox boxcenter">
+        <canvas width="250" height="250"></canvas>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  function DNDFileController(parent) {
+    this._parent = $(parent);
+    var dropZone = this._parent.find('.dropTarget');
+    dropZone.bind('dragover', $.proxy(this, 'handleDragOver'));
+    dropZone.bind('dragenter', $.proxy(this, 'handleDragEnter'));
+    dropZone.bind('drop', $.proxy(this, 'handleFileSelect'));
+  };
+  
+  DNDFileController.prototype.handleDragOver = function(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+  };
+  
+  DNDFileController.prototype.handleDragEnter = function(evt) {
+    evt.target.classList.add('hover');
+    evt.target.setAttribute('data-drag-listener', true);
+    this._handleDragLeave = $.proxy(this, 'handleDragLeave');
+    evt.target.addEventListener('dragleave', this._handleDragLeave, false);
+  };
+  
+  DNDFileController.prototype.handleDragLeave = function(evt) {
+    evt.target.classList.remove('hover');
+    evt.target.removeEventListener('dragLeave', this._handleDragLeave, false);
+  };
+  
+  DNDFileController.prototype.handleFileSelect = function(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    evt.target.classList.remove('hover');
+    evt.target.removeEventListener('dragLeave', this._handleDragLeave, false);
+    
+    var files = evt.originalEvent.dataTransfer.files;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      if (!file.type.match('image.*')) {
+        console.log('skipping non image');
+        continue;
+      }
+      
+      var reader = new FileReader();
+      var controller = this;
+      reader.onload = function(evt) {
+        var img = new Image();
+        img.onload = function(evt) {
+          var canvas = controller._parent.find('canvas').get(0);
+          controller.renderImage(canvas, this);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  DNDFileController.prototype.renderImage = function(canvas, image) {
+    var padding = 20;
+    var maxdim = Math.max(image.width, image.height + (2 * padding));
+    var mindim = Math.min(canvas.height, canvas.width);
+    var scale = mindim / maxdim;
+    var context = canvas.getContext('2d');
+    var slices = image.width;
+    var sliceW = image.width / slices;
+    for (var i = 0; i < slices; i++) {
+      var sx = sliceW * i;
+      var sy = 0;
+      var sw = sliceW;
+      var sh = image.height;
+      var dx = scale * sx;
+      var dy = scale * (Math.round(Math.sin(i * 20 / image.width) * padding) + padding);
+      var dw = scale * sliceW + 0.8;
+      var dh = scale * image.height;
+      context.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+  };
+  
+  var dndc = new DNDFileController('#slide-dndfiles');
+</script>
+
+
+<!--
+ *
  * Notifications
  *
 -->
@@ -999,6 +1080,40 @@ $(document).ready(function() {
 <script>
   var os = new OrientationSlide('#slide-orientation-2');
 </script>
+
+
+<!--
+ *
+ * VIDEO+CANVAS: Demo
+ *
+-->
+<div class="slide" id="slide-video-2">
+  <header>More fun with video and canvas</header>
+  <section class="flex vbox boxcenter">
+    <div class="noflex hbox boxcenter">
+      <div class="vbox noflex">
+        <div class="content">
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+var vpc = null;
+function startVideoDemo() {
+  var parent = $('#slide-video-2 .content').get(0);
+  vpc = new VideoPhysicsController(parent, 750, 600);
+};
+function stopVideoDemo() {
+  vpc.stop();
+  delete vpc;
+  $('#slide-video-2 .content').empty();
+};
+$('#slide-video-2')
+  .bind('focusslide', startVideoDemo)
+  .bind('blurslide', stopVideoDemo);
+</script>
+
 
 <!--
  *
@@ -1358,32 +1473,6 @@ $(function() {
   setFlexboxDimensions();
 });
 </script>
-
-
-<!--
- *
- * HTML5 Goodies
- *
--->
-<DIV class="slide">
-  <header>More HTML5 Goodies to Consider</header>
-  <section>
-    <ul class="summary">
-      <li><strong>Application Cache</strong>
-        <ul>
-          <li>offline experience
-        </ul>
-        <br/>
-      </li>
-      <li>
-        <strong>Geolocation</strong>
-        <ul>
-          <li>tag location information for drawings or users
-        </ul>
-      </li>
-    </ul>
-  </section>
-</div>
 
 
 <!-- Key Take-Aways -->
