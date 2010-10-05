@@ -296,6 +296,15 @@ img.shadowed {
   -webkit-animation-timing-function: ease-in-out;
   -webkit-animation-direction: alternate;
 }
+
+.cssIsAwesomeBox {
+  width: 350px;
+  height: 350px;
+  border: 4px solid #000;
+  color: #000;
+  font: 110px Arial;
+  line-height: 120px;
+}
 /*******************************************************************************
  * PREFLIGHT STYLES
  ******************************************************************************/
