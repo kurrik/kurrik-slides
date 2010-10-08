@@ -1053,18 +1053,14 @@ PhysicsSimulation.prototype.step = function() {
   this._world.Step(delta, this.ACCURACY);
 };
 
-function VideoPhysicsController(parent, width, height) {
-  this._proxyTilt = $.proxy(this, '_onTilt'); 
-  window.addEventListener('deviceorientation', this._proxyTilt, false);
-
-  this._video = document.createElement('video');
-  this._video.addEventListener('canplay', $.proxy(this, '_onVideoLoaded'), false);
-  this._video.addEventListener('ended', $.proxy(this, '_onVideoEnded'), false);  
-  this._video.loop = true;
-  this._video.autoplay = true;
+function VideoPhysicsController(parent, video, width, height) {
+  this._video = video; 
+  this._proxyVideoCanPlay = $.proxy(this, '_onVideoLoaded');
+  this._proxyVideoEnded = $.proxy(this, '_onVideoEnded');
+  this._video.addEventListener('canplay', this._proxyVideoCanPlay, false);
+  this._video.addEventListener('ended', this._proxyVideoEnded, false);  
   this._video.src = 'static/video/chrome.webm';
   this._video.style.display = 'none';
-  parent.appendChild(this._video);
   
   this._buffer = document.createElement('canvas');
   this._output = document.createElement('canvas');
@@ -1074,6 +1070,8 @@ function VideoPhysicsController(parent, width, height) {
   parent.appendChild(this._output);
   
   this._physics = new PhysicsSimulation(width, height);
+  this._proxyTilt = $.proxy(this, '_onTilt'); 
+  window.addEventListener('deviceorientation', this._proxyTilt, false);
     
   this._tiles = [];
 };
@@ -1120,6 +1118,9 @@ VideoPhysicsController.prototype.stop = function() {
   window.clearInterval(this._interval);  
   this._interval = null;
   this._video.pause();
+  this._video.removeEventListener('canplay', this._proxyVideoCanPlay, false);
+  this._video.removeEventListener('ended', this._proxyVideoEnded, false);  
+
   window.removeEventListener('deviceorientation', this._proxyTilt, false);
   delete this._video;
   delete this._physics;

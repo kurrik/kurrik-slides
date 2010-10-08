@@ -815,7 +815,7 @@ db.<b>transaction</b>(function(tx) {
  *
  * WebSockets
  *
--->
+
 <div class="slide" id="slide-socket">
   <header>WebSockets</header>
   <section>
@@ -838,6 +838,7 @@ db.<b>transaction</b>(function(tx) {
     .bind('focusslide', startSockets)
     .bind('blurslide', stopSockets);
 </script>
+-->
 
 <!--
  *
@@ -1101,6 +1102,7 @@ $(document).ready(function() {
 <div class="slide" id="slide-video-2">
   <header>More fun with video and canvas</header>
   <section class="flex vbox boxcenter">
+    <video style="display: none" src="static/video/chrome.webm"></video>
     <div class="noflex hbox boxcenter">
       <div class="vbox noflex">
         <div class="content">
@@ -1113,11 +1115,16 @@ $(document).ready(function() {
 var vpc = null;
 function startVideoDemo() {
   var parent = $('#slide-video-2 .content').get(0);
-  vpc = new VideoPhysicsController(parent, 750, 600);
+  var video = $('#slide-video-2 video').get(0);
+  vpc = new VideoPhysicsController(parent, video, 750, 600);
 };
 function stopVideoDemo() {
   vpc.stop();
   delete vpc;
+  vpc = null;
+  var video = $('#slide-video-2 video').get(0);
+  //var src = video.src;
+  //video.src = src;
   $('#slide-video-2 .content').empty();
 };
 $('#slide-video-2')
