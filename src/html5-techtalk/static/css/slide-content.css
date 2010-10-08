@@ -305,6 +305,41 @@ img.shadowed {
   font: 110px Arial;
   line-height: 120px;
 }
+
+.cssIsAwesomeBox2 {
+  -webkit-transform: rotate(-20deg);
+  width: 350px;
+  height: 350px;
+  border: 4px solid #000;
+  color: #000;
+  border-radius: 40px;
+  -webkit-box-shadow: 0px 8px 25px #000;
+  text-align: center;
+  background: -webkit-gradient(
+       linear, left top, left bottom,
+       from(#b00), color-stop(0.6, #fcc), to(#b00));
+  text-shadow: 5px 5px 0 #b00;
+}
+
+.cssIsAwesomeBox2 span {
+  display: block;
+  -webkit-transform: rotate(25deg);
+  font: 100px Molengo;
+  line-height: 80px;
+  position: relative;
+  top: 0.5em;
+}
+
+.cssIsAwesomeBox2 b {
+  display: block;
+  font: 120px Lobster;
+  -webkit-text-stroke: 4px #000;
+  color: #fff;
+  position: relative;
+  left: -0.6em;
+}
+
+
 /*******************************************************************************
  * PREFLIGHT STYLES
  ******************************************************************************/
@@ -738,7 +773,7 @@ img.shadowed {
 }
 
 #slide-chrome {
-  background: #fff url('../images/chrome-logo-sliced.jpg') no-repeat bottom center;
+  background: #fff url('../images/chrome-logo-sliced.jpg') no-repeat center 110%;
 }
 
 /*******************************************************************************
