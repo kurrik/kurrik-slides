@@ -799,7 +799,14 @@ img.shadowed {
  * SVG 
  ******************************************************************************/
 #slide-svg svg text {
-  font: 40px Lobster;
+  font: 60px Lobster;
+  letter-spacing: 5px;
+  word-spacing: 5px;
+}
+
+#slide-svg svg {
+  display: block;
+  margin: 0 auto;
 }
 
 /*******************************************************************************

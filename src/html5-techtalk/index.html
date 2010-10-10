@@ -593,24 +593,44 @@ gl.<b>viewport</b>(0, 0, canvas.width, canvas.height);
       M 50,100 C 200,0 200,300 400,200 C 600,0 600,300 800,100&quot;&gt;
   &lt;/defs&gt;
   &lt;text&gt;
-    &lt;tspan&gt;&lt;textPath xlink:href=&quot;#textPath&quot;&gt;Did you know that 
-        SVG can render text along a path?&lt;/textPath&gt;&lt;/tspan&gt;
+    &lt;tspan&gt;&lt;textPath xlink:href=&quot;#textPath&quot;&gt;
+      This text follows a line
+    &lt;/textPath&gt;&lt;/tspan&gt;
   &lt;/text&gt;
 &lt;/<b>svg</b>&gt;</pre>
-    <svg height="200" width="800">
+    <svg height="200" width="650" id="svgElement">
       <defs>
         <path id="textPath" d="
-          M 20,50 C 200,0 200,300 400,100 C 600,0 600,200 800,150">
+          M 20,50 C 200,50 200,200 400,100 C 600,0 600,200 800,150">
       </defs>
       <text>
         <tspan>
-          <textPath xlink:href="#textPath">Did you know that 
-            SVG can render text along a path?</textPath>
+          <textPath id="svgText" xlink:href="#textPath">This text follows a line</textPath>
         </tspan>
       </text>
     </svg>
+    <button class="hidden" id='svgTranslateButton'>Click me!</button>
   </section>
 </div>
+<script src="http://www.google.com/jsapi"></script> 
+<script> 
+  google.load("language", "1");
+
+  function initLanguage() {
+    var btn = document.querySelector('#svgTranslateButton');
+    btn.classList.remove('hidden');
+    btn.addEventListener('click', function() {
+      var text = document.querySelector('#svgText').textContent;
+      google.language.translate(text, "en", "th", function(result) {
+        if (!result.error) {
+          var text = document.querySelector('#svgText');
+          text.textContent = result.translation;
+        }
+      });
+    }, false);
+  };
+  google.setOnLoadCallback(initLanguage);
+</script>
 
 <!--
  *
@@ -815,14 +835,14 @@ db.<b>transaction</b>(function(tx) {
  *
  * WebSockets
  *
-
+-->
 <div class="slide" id="slide-socket">
   <header>WebSockets</header>
   <section>
     <div class="hbox boxcenter">
-      <div class="vbox">
-        <iframe id="socketFrame" width="660" height="420" src=""></iframe>
-        <div class="hcenter"><a target="_blank" href="http://bit.ly/websocket-raytrace">http://bit.ly/websocket-raytrace</a></div>
+      <div class="vbox hcenter">
+        <iframe id="socketFrame" width="350" height="420" src=""></iframe>
+        <div class="hcenter"><a target="_blank" href="http://bit.ly/websockets-demo">http://bit.ly/<b>websockets-demo</b></a></div>
       </div>
     </div>
   </section>
@@ -838,7 +858,7 @@ db.<b>transaction</b>(function(tx) {
     .bind('focusslide', startSockets)
     .bind('blurslide', stopSockets);
 </script>
--->
+
 
 <!--
  *
@@ -979,7 +999,7 @@ function onDrop(evt) {
   };
   
   DNDFileController.prototype.renderImage = function(canvas, image) {
-    var padding = 20;
+    var padding = 40;
     var maxdim = Math.max(image.width, image.height + (2 * padding));
     var mindim = Math.min(canvas.height, canvas.width);
     var scale = mindim / maxdim;
@@ -992,7 +1012,7 @@ function onDrop(evt) {
       var sw = sliceW;
       var sh = image.height;
       var dx = scale * sx;
-      var dy = scale * (Math.round(Math.sin(i * 20 / image.width) * padding) + padding);
+      var dy = scale * (Math.round(Math.sin(i * 40 / image.width) * padding) + padding);
       var dw = scale * sliceW + 0.8;
       var dh = scale * image.height;
       context.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -1158,7 +1178,7 @@ $('#slide-video-2')
   <section class="flex hbox boxcenter">
     <div class="noflex vbox boxcenter">
       <div class="cssIsAwesomeBox">
-        CSS IS AWESOME
+        CSS IS AWFUL?
       </div>
     </div>
   </section>
@@ -1574,6 +1594,12 @@ $(function() {
         <li><a target="_blank" href="http://twitter.com/ChromiumDev">twitter.com/<b>ChromiumDev</b></a></li>
         <li><a target="_blank" href="http://twitter.com/kurrik">twitter.com/<b>kurrik</b></a></li>
         <li><a target="_blank" href="http://github.com/kurrik/html-samples">github.com/kurrik/html-samples</a></li>
+      </ul>
+      <ul class="summary">
+        <li><strong>Don't miss:</strong> 
+          <a href="https://chrome.google.com/extensions/detail/poekajjboffdbpndplgcldfbjdbabclc">HTML5 + <br/>
+          Chrome Extension
+          Code Lab</a></li>
       </ul>
     </div>
   </section>
