@@ -12,6 +12,10 @@ handlers:
   static_dir: html5-awesome/static
   expiration: "1d"
   
+- url: /cws-lightning/static
+  static_dir: cws-lightning/static
+  expiration: "1d"
+  
 - url: /static
   static_dir: static
   expiration: "1d"

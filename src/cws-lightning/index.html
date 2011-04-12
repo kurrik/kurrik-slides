@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold&subset=latin' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono&subset=latin' rel='stylesheet' type='text/css'>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: Droid Sans;
+      }
+      .slide {
+        width: 100%;
+        height: 100%;
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        -webkit-box-orient: vertical;
+      }
+      
+      /*
+      .slide:nth-child(-n + 2) { background: #900; color: #fff; }
+      .slide:nth-child(x) { background: #090; color: #000; }
+      .slide:nth-child(x) { background: #009; color: #fff; }
+      .slide:nth-child(x) { background: #ddd000; color: #000; }
+      */
+      
+      .red { color: #900; }
+      .green { color: #090; }
+      .blue { color: #009; }
+      
+      .content {
+        -display: -webkit-box;
+        -webkit-box-flex: 0;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        font-size: 60px;
+        max-width: 70%;
+      }
+      h1, h2 {
+        font-size: 100px;
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+      }
+      h2 {
+        font-size: 70px;
+      }
+      a {
+        color: #36b;
+        text-decoration: none;
+        border-bottom: 4px dotted;
+      }
+      ul {
+        padding: 10px 0 10px 1em;
+        margin: 0;
+      }
+      p {
+        margin: 20px 0;
+      }
+      pre {
+        font-family: Droid Sans Mono;
+        font-size: 20px;
+      }
+      .invis {
+        visibility: hidden;
+      }
+      .hidden {
+        display: none;
+      }
+      #include {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 30px;
+        /* text-shadow: 2px 2px 0px #000; */
+        color: #000;
+      }
+      img {
+        max-height: 80%;
+        max-width: 90%;
+        display: block;
+        margin: 0 auto;
+        -webkit-box-shadow: 0px 8px 6px #333;
+      }
+      img.plain {
+        -webkit-box-shadow: none;
+        display: inline;
+      }
+      .smaller {
+        font-size: 40px;
+      }
+    </style>
+    <script>
+      var numslides = 0;
+      var currentslide = 0;
+      var slides = null;
+      
+      function onLoad(evt) {
+        slides = document.querySelectorAll('.slide');
+        numslides = slides.length;
+
+        var num = parseInt(window.location.hash.substring(1));
+        if (num && num < numslides && num > 0) {
+          currentslide = num;
+        }
+        viewCurrentSlide();
+        window.addEventListener('keydown', onKeyDown, false);
+      };
+      
+      function viewCurrentSlide() {
+        var reveals = slides[currentslide].querySelectorAll('.reveal');
+        for (var i = 0; i < reveals.length; i++) {
+          reveals[i].classList.add('invis');
+        }
+        slides[currentslide].scrollIntoView();
+      };
+      
+      function onKeyDown(evt) {
+        switch (evt.keyCode) {
+          case 37: // left arrow
+            prevSlide();
+            break;
+          case 39: // right arrow
+            nextSlide();
+            break;
+        }
+      };
+      
+      function nextSlide() {
+        var toreveal = slides[currentslide].querySelector('.invis');
+        if (toreveal) {
+          toreveal.classList.remove('invis');
+          return;
+        }
+        
+        if (currentslide < (numslides - 1)) {
+          currentslide++;
+          viewCurrentSlide();
+          window.location.hash = currentslide;
+        }
+      };
+      
+      function prevSlide() {
+        if (currentslide > 0) {
+          currentslide--;
+          viewCurrentSlide();
+          window.location.hash = currentslide;
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div class="slide">
+      <div class="content">
+        <h1>Preflight</h1>
+        <ul>
+          <li>Navigate w/ <strong>left</strong> &amp; <strong>right</strong> arrows</li>
+          <li>Use <strong>Chrome Dev Channel</strong></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1>Hello</h1>
+        <div>
+          <span class="reveal">My</span> 
+          <span class="reveal">name</span> 
+          <span class="reveal">is</span> 
+          <span class="reveal"><strong>Arne</strong></span>
+        </div>
+        <div class="reveal">
+          and I work for <strong>Google</strong>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div>Let's talk about</div>
+        <div class="reveal">
+          <h1>Web Apps</h1>
+          <a target="_blank" href="http://lovelywebapps.blogspot.com/">lovelywebapps.blogspot.com</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">People are using</div>
+        <h1 class="">
+          <span class="reveal red">HTML</span>
+          <span class="reveal blue">CSS</span>
+          <span class="reveal">and</span>
+          <span class="reveal green">JavaScript</span>
+        </h1>
+        <div class="reveal">In <strong>amazing</strong> ways</div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">To create experiences which</div>
+        <div class="reveal">
+          <h1 class="">were not possible</h1>
+          <div class="">even a year ago</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">We like to call these</div>
+        <h1 class="reveal">Web Apps</h1>
+        <div class="reveal">and they have <strong>commonalities</strong></div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="content">
+        <div class="">These are apps which have</div>
+        <h1 class="reveal">A tight focus</h1>
+        <div>
+          <span class="reveal">They do</span>
+          <span class="reveal"><strong>one thing</strong></span>
+          <span class="reveal">really well</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">A web app has a</div>
+        <h1>Big screen</h1>
+        <div class="reveal">Utilizes the <strong>entire window</strong></div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">A web app has a</div>
+        <h1>Rich experience</h1>
+        <div class="reveal"><strong>Engaging</strong> to the user</div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">A web app is</div>
+        <h1>Fast and Functional</h1>
+        <div class="reveal">Uses modern technology</div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1 class="red">But...</h1>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">Distributing a web app has</div>
+        <h1>some challenges</h1>
+        <p>
+          <ul>
+            <li class="reveal red">User expectations</li>
+            <li class="reveal blue">Search != Discoverability</li>
+            <li class="reveal green">Monetization</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">We are creating the</div>
+        <h2>Chrome Web Store <img class="plain" src="static/icon.png"/></h2>
+        <div class="">To help address these</div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1>Chrome Web Store</h1>
+        <div>
+          <span class="reveal">Distribute</span>
+          <span class="reveal"><strong>Web Apps</strong></span>
+          <span class="reveal">to end users</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1>All apps welcome</h1>
+        <div class="reveal">Like the Chrome Extensions gallery</div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="content">
+        <h1>Accept Payments</h1>
+        <div>
+          <span class="reveal">People will pay for great apps</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1>Single Sign-On</h1>
+        <div>
+          <span class="reveal">Chrome Web Store uses OpenID</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1>License Server</h1>
+        <div>
+          <span class="reveal">Simple querying API using OAuth</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div class="">So what about:</div>
+        <p>
+          <ul>
+            <li class="red">User expectations</li>
+            <li class="blue">Search != Discoverability</li>
+            <li class="green">Monetization</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h2 class="red">User expectations</h2>
+        <div>Creating a <strong>new UI</strong>:</div>
+        <p><img src="static/apps.png" /></p>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h2 class="blue">Search != Discoverability</h2>
+        <div>Find apps via <strong>metadata</strong>, <strong>reviews</strong>:</div>
+        <p><img src="static/webstore.png" /></p>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h2 class="green">Monetization</h2>
+        <div>The store supports:</div>
+        <p>
+          <ul>
+            <li class="reveal"><strong>One-time</strong> payments</li>
+            <li class="reveal"><strong>Monthly or yearly</strong> subscriptions</li>
+            <li class="reveal"><strong>Third-party</strong> payment solutions</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1 class="blue">To summarize...</h1>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="content">
+        <h1>Chrome Web Store</h1>
+        <div>
+          <span class="reveal">Distribute</span>
+          <span class="reveal"><strong>Web Apps</strong></span>
+          <span class="reveal">to end users</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <h1 class="green">Super easy to create</h1>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <pre>{
+  "name": "Google Mail",
+  "description": "Read your gmail",
+  "version": "1",
+  "app": {
+    "urls": [
+      "*://mail.google.com/mail/",
+      "*://www.google.com/mail/"
+    ],
+    "launch": {
+      "web_url": "http://mail.google.com/mail/"
+    }
+  },
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "permissions": [
+    "unlimitedStorage",
+    "notifications"
+  ]
+}</pre>
+      </div>
+    </div>
+    
+    <div class="slide">
+      <div class="content">
+        <div>Launch steps:</div>
+        <ol class="smaller">
+          <li class="blue">Build an awesome web app</li>
+          <li class="red">?</li>
+          <li class="green">Profit</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="slide">
+      <div class="content">
+        <div>Launch steps:</div>
+        <ol class="smaller">
+          <li class="blue">Build an awesome web app</li>
+          <li class="reveal">Create a <strong>manifest file</strong></li>
+          <li class="reveal">Make some <strong>icons</strong></li>
+          <li class="reveal"><strong>Zip</strong> manifest and icons</li>
+          <li class="reveal">Upload to <strong>Chrome Developer Dashboard</strong></li>
+          <li class="reveal"><strong>Configure</strong> your listing</li>
+          <li class="reveal">Pay <strong>one-time</strong> $5 registration fee</li>
+          <li class="reveal"><strong>Verify your domain</strong> with Google Webmaster Tools</li>
+          <li class="reveal"><strong>Press Publish</strong></li>
+          <li class="green">Profit</li>
+        </ol>
+      </div>
+    </div>
+      
+    <div class="slide">
+      <div class="content">
+        <h1>Thanks!</h1>
+        <p>
+          <strong>2-minute</strong> demo: <br>
+          <a target="_blank" href="http://bit.ly/cws-upload-demo">bit.ly/<strong>cws-upload-demo</strong></a>
+        </p>
+        <p>
+          <strong>Web store docs</strong>: <br>
+          <a target="_blank" href="http://bit.ly/cws-docs">bit.ly/<strong>cws-docs</strong></a>
+        </p>
+        <p>I'll be available to answer questions</p>
+      </div>
+    </div>
+
+    
+    <div id="include">
+      Twitter - @kurrik | <a target="_blank" href="http://bit.ly/cws-lightning">bit.ly/<strong>cws-lightning</strong></a>
+    </div>
+    
+    <script>
+      onLoad();
+    </script>
+  </body>
+</html>
